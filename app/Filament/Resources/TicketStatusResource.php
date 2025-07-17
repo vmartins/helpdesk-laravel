@@ -6,9 +6,9 @@ use App\Filament\Resources\TicketStatusResource\Pages;
 use App\Filament\Resources\TicketStatusResource\RelationManagers\TicketsRelationManager;
 use App\Models\TicketStatus;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -17,9 +17,19 @@ class TicketStatusResource extends Resource
 {
     protected static ?string $model = TicketStatus::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?int $navigationSort = 4;
+
+    public static function getModelLabel(): string
+    {
+        return __('Status');
+    }
+    
+    public static function getPluralModelLabel(): string
+    {
+        return self::getModelLabel();
+    }
 
     public static function form(Form $form): Form
     {
@@ -45,7 +55,7 @@ class TicketStatusResource extends Resource
 
                 Tables\Columns\TextColumn::make('tickets_count')
                     ->counts('tickets')
-                    ->label(__('Tickets Count'))
+                    ->label(__('Tickets Total'))
                     ->sortable(),
             ])
             ->filters([])
@@ -78,8 +88,4 @@ class TicketStatusResource extends Resource
             ]);
     }
 
-    public static function getPluralModelLabel(): string
-    {
-        return __('Ticket Statuses ');
-    }
 }

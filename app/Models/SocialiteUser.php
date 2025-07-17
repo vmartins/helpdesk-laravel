@@ -4,24 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use DutchCodingCompany\FilamentSocialite\Models\Contracts\FilamentSocialiteUser as FilamentSocialiteUserContract;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Laravel\Socialite\Contracts\User as SocialiteUserContract;
 
-class SocialiteUser extends Model
+class SocialiteUser implements FilamentSocialiteUserContract
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'user_id',
-        'provider',
-        'provider_id',
-    ];
-
-    /**
-     * Get the User that owns the SocialiteUser
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function User()
+    public function getUser(): Authenticatable
     {
-        return $this->belongsTo(User::class);
+        //
+        return auth()->user();
+    }
+
+    public static function findForProvider(string $provider, SocialiteUserContract $oauthUser): ?self
+    {
+        //
+
+        return new static();
+    }
+    
+    public static function createForProvider(
+        string $provider,
+        SocialiteUserContract $oauthUser,
+        Authenticatable $user
+    ): self {
+        //
+
+        return new static();
     }
 }

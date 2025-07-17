@@ -3,14 +3,13 @@
 namespace App\Filament\Resources\ProblemCategoryResource\Pages;
 
 use App\Filament\Resources\ProblemCategoryResource;
-use Filament\Pages\Actions;
+use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-
 class EditProblemCategory extends EditRecord
 {
     protected static string $resource = ProblemCategoryResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\ViewAction::make(),

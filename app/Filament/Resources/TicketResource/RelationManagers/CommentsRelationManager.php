@@ -3,50 +3,58 @@
 namespace App\Filament\Resources\TicketResource\RelationManagers;
 
 use App\Filament\Resources\TicketResource;
+use App\Models\Comment;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Component as Livewire;
 
 class CommentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'comments';
 
-    protected static ?string $recordTitleAttribute = 'comment';
-
     protected function isTablePaginationEnabled(): bool
     {
         return false;
     }
 
-    public static function form(Form $form): Form
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('Comments');
+    }
+
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Card::make()->schema([
+                Section::make()->schema([
                     Forms\Components\RichEditor::make('comment')
+                        ->translateLabel()
                         ->required()
                         ->maxLength(255),
                     Forms\Components\FileUpload::make('attachments')
+                        ->translateLabel()
                         ->directory('comment-attachments/' . date('m-y'))
                         ->maxSize(2000)
-                        ->enableDownload(),
+                        ->downloadable(),
                 ])
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->modelLabel(__('Comment'))
             ->columns([
                 Stack::make([
                     Split::make([
@@ -66,12 +74,12 @@ class CommentsRelationManager extends RelationManager
             ])
             ->filters([])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->mutateFormDataUsing(function (array $data): array {
-                    $data['user_id'] = auth()->id();
+                Tables\Actions\CreateAction::make()
+                    ->mutateFormDataUsing(function (array $data): array {
+                        $data['user_id'] = auth()->id();
 
-                    return $data;
-                })
-                    ->label('Tambah Komentar')
+                        return $data;
+                    })
                     ->after(function (Livewire $livewire) {
                         $ticket = $livewire->ownerRecord;
 
@@ -88,9 +96,9 @@ class CommentsRelationManager extends RelationManager
                         }
 
                         Notification::make()
-                            ->title('Terdapat komentar baru pada tiket Anda')
+                            ->title(__('There are new comments on your ticket'))
                             ->actions([
-                                Action::make('Lihat')
+                                Action::make(__('Show'))
                                     ->url(TicketResource::getUrl('view', ['record' => $ticket->id])),
                             ])
                             ->sendToDatabase($receiver);
@@ -100,6 +108,7 @@ class CommentsRelationManager extends RelationManager
                 Tables\Actions\Action::make('attachment')->action(function ($record) {
                     return response()->download('storage/' . $record->attachments);
                 })->hidden(fn ($record) => $record->attachments == ''),
+
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([]);

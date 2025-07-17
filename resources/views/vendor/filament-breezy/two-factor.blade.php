@@ -10,7 +10,7 @@
             {{ $this->usingRecoveryCode ? __('filament-breezy::default.two_factor.recovery.heading') : __('filament-breezy::default.two_factor.heading') }}
         </h2>
         <p class="mt-2 text-sm text-center">
-            {{ $this->usingRecoveryCode ? __('filament-breezy::default.two_factor.recovery.description') : __('filament-breezy::default.two_factor.description') }} <a class="text-primary-600" href="{{route('filament.auth.login')}}">
+            {{ $this->usingRecoveryCode ? __('filament-breezy::default.two_factor.recovery.description') : __('filament-breezy::default.two_factor.description') }} <a class="text-primary-600" href="{{route('filament.admin.auth.login')}}">
                 {{ __('filament-breezy::default.two_factor.back_to_login_link') }}
             </a>
         </p>

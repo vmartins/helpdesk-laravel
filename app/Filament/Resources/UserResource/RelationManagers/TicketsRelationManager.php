@@ -4,31 +4,38 @@ namespace App\Filament\Resources\UserResource\RelationManagers;
 
 use App\Models\Ticket;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Database\Eloquent\Model;
 
 class TicketsRelationManager extends RelationManager
 {
     protected static string $relationship = 'tickets';
 
-    protected static ?string $recordTitleAttribute = 'title';
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('Tickets');
+    }
 
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
+                    ->translateLabel()
                     ->required()
                     ->maxLength(255),
             ])
         ;
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->modelLabel(__('Ticket'))
+            ->recordTitleAttribute('title')
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->translateLabel()
@@ -39,10 +46,11 @@ class TicketsRelationManager extends RelationManager
                     ->sortable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('problemCategory.name')
+                    ->label(__('Category'))
                     ->searchable()
-                    ->translateLabel()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('ticketStatus.name')
+                    ->label(__('Status'))
                     ->sortable(),
             ])
             ->filters([
@@ -51,7 +59,7 @@ class TicketsRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->url(fn (Ticket $record): string => route('filament.resources.tickets.view', $record)),
+                    ->url(fn (Ticket $record): string => route('filament.admin.resources.tickets.view', $record)),
             ])
             ->bulkActions([
             ])

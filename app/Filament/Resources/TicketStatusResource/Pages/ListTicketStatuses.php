@@ -4,7 +4,7 @@ namespace App\Filament\Resources\TicketStatusResource\Pages;
 
 use App\Filament\Resources\TicketStatusResource;
 use App\Filament\Widgets\TicketStatusesChart;
-use Filament\Pages\Actions;
+use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListTicketStatuses extends ListRecords
@@ -25,7 +25,7 @@ class ListTicketStatuses extends ListRecords
         ];
     }
 
-    protected function getHeaderWidgetsColumns(): int | array
+    public function getHeaderWidgetsColumns(): int | array
     {
         return 1;
     }

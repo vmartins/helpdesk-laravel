@@ -7,9 +7,9 @@ use App\Filament\Resources\UnitResource\RelationManagers\ProblemCategoriesRelati
 use App\Filament\Resources\UnitResource\RelationManagers\UsersRelationManager;
 use App\Models\Unit;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -20,7 +20,15 @@ class UnitResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
 
-    protected static ?string $navigationGroup = 'Master Data';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Administration');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Unit');
+    }
 
     public static function form(Form $form): Form
     {
@@ -28,6 +36,7 @@ class UnitResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->translateLabel()
                     ->maxLength(255),
             ])
         ;
@@ -37,7 +46,8 @@ class UnitResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->translateLabel(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),

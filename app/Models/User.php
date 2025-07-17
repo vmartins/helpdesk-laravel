@@ -121,7 +121,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
      *
      * Only active users can access the filament
      */
-    public function canAccessFilament(): bool
+    public function canAccessPanel(\Filament\Panel $panel): bool
     {
         return auth()->user()->is_active;
     }

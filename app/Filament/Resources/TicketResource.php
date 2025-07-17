@@ -11,10 +11,10 @@ use App\Models\TicketStatus;
 use App\Models\Unit;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Components\Card;
-use Filament\Resources\Form;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -27,13 +27,16 @@ class TicketResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
-    protected static ?string $recordTitleAttribute = 'title';
+    public static function getModelLabel(): string
+    {
+        return __('Ticket');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Card::make()->schema([
+                Section::make()->schema([
                     Forms\Components\Select::make('unit_id')
                         ->label(__('Work Unit'))
                         ->options(Unit::all()
@@ -99,7 +102,7 @@ class TicketResource extends Resource
                     'sm' => 2,
                 ])->columnSpan(2),
 
-                Card::make()->schema([
+                Section::make()->schema([
                     Forms\Components\Select::make('priority_id')
                         ->label(__('Priority'))
                         ->options(Priority::all()
@@ -109,8 +112,7 @@ class TicketResource extends Resource
 
                     Forms\Components\Select::make('ticket_statuses_id')
                         ->label(__('Status'))
-                        ->options(TicketStatus::all()
-                            ->pluck('name', 'id'))
+                        ->options(TicketStatus::all()->pluck('name', 'id'))
                         ->searchable()
                         ->required()
                         ->hiddenOn('create')
@@ -154,6 +156,17 @@ class TicketResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->translateLabel()
+                    ->limit(50)
+                    ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
+                        $state = $column->getState();
+
+                        if (strlen($state) <= $column->getCharacterLimit()) {
+                            return null;
+                        }
+
+                        // Only render the tooltip if the column content exceeds the length limit.
+                        return $state;
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -230,8 +243,4 @@ class TicketResource extends Resource
             ]);
     }
 
-    public static function getPluralModelLabel(): string
-    {
-        return __('Tickets');
-    }
 }

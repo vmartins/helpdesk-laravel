@@ -3,45 +3,55 @@
 namespace App\Filament\Resources\UnitResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Database\Eloquent\Model;
 
 class UsersRelationManager extends RelationManager
 {
     protected static string $relationship = 'users';
 
-    protected static ?string $recordTitleAttribute = 'name';
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('Users');
+    }
 
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->translateLabel()
                     ->required()
                     ->maxLength(255),
             ])
         ;
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->modelLabel(__('User'))
+            ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TagsColumn::make('roles.name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->translateLabel(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->translateLabel(),
             ])
             ->filters([
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\AssociateAction::make()
+                    ->recordSelectSearchColumns(['name', 'email']),
             ])
             ->actions([
-                Tables\Actions\DetachAction::make(),
+                Tables\Actions\DissociateAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DetachBulkAction::make(),
+                Tables\Actions\DissociateBulkAction::make(),
             ])
         ;
     }

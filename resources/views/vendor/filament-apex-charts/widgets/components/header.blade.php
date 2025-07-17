@@ -5,9 +5,9 @@
 
             <div>
                 @if ($heading)
-                    <x-filament::card.heading class="filament-apex-charts-heading">
+                    <div class="filament-apex-charts-heading text-base font-semibold leading-6">
                         {!! $heading !!}
-                    </x-filament::card.heading>
+                    </div>
                 @endif
 
                 @if ($subheading)
@@ -19,10 +19,8 @@
 
             <div>
                 @if ($filters)
-                    <select wire:model="filter" @class([
-                        'apex-charts-single-filter w-full text-gray-900 border-gray-300 block h-10 transition duration-75 rounded-lg shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500',
-                        'dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:focus:border-primary-500' => config(
-                            'filament.dark_mode'),
+                    <select wire:model.live="filter" @class([
+                        'apex-charts-single-filter w-full text-gray-900 border-gray-300 block h-10 transition duration-75 rounded-lg shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:focus:border-primary-500',
                     ]) wire:loading.class="animate-pulse">
                         @foreach ($filters as $value => $label)
                             <option value="{{ $value }}">
@@ -36,7 +34,7 @@
             @if ($filterFormAccessible)
                 <div>
 
-                    <x-filament-apex-charts::filter-form :$indicatorsCount :$width>
+                    <x-filament-apex-charts::filter-form :indicatorsCount=$indicatorsCount :width=$width>
                         {{ $filterForm }}
                     </x-filament-apex-charts::filter-form>
 

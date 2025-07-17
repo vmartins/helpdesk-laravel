@@ -7,9 +7,9 @@ use App\Filament\Resources\ProblemCategoryResource\RelationManagers\TicketsRelat
 use App\Models\ProblemCategory;
 use App\Models\Unit;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -22,14 +22,23 @@ class ProblemCategoryResource extends Resource
 
     protected static ?int $navigationSort = 5;
 
+    public static function getModelLabel(): string
+    {
+        return __('Category');
+    }
+    
+    // public static function getPluralModelLabel(): string
+    // {
+    //     return self::getModelLabel();
+    // }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('unit_id')
-                    ->label(__('Work Unit'))
-                    ->options(Unit::all()
-                        ->pluck('name', 'id'))
+                    ->label(__('Unit'))
+                    ->options(Unit::all()->pluck('name', 'id'))
                     ->searchable()
                     ->required(),
                 Forms\Components\TextInput::make('name')
@@ -48,7 +57,7 @@ class ProblemCategoryResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('unit.name')
                     ->searchable()
-                    ->label(__('Work Unit')),
+                    ->label(__('Unit')),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -93,8 +102,4 @@ class ProblemCategoryResource extends Resource
             });
     }
 
-    public static function getPluralModelLabel(): string
-    {
-        return __('Problem Category');
-    }
 }
