@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Settings\AccountSettings;
+use App\Settings\GeneralSettings;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -29,14 +31,13 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        if (app()->runningInConsole()) return $panel->id('admin');
+
+        $panel
             ->default()
             ->id('admin')
             ->path('admin')
             ->login()
-            ->registration()
-            ->passwordReset()
-            ->emailVerification()
             ->profile()
             ->colors([
                 'primary' => Color::Amber,
@@ -45,29 +46,17 @@ class AdminPanelProvider extends PanelProvider
                 FilamentApexChartsPlugin::make(),
 
                 FilamentSocialitePlugin::make()
-                    // (required) Add providers corresponding with providers in `config/services.php`. 
-                    ->providers([
-                        // Create a provider 'gitlab' corresponding to the Socialite driver with the same name.
-                        Provider::make('google')
-                            ->label('Google')
-                            ->icon('fab-google')
-                            ->color(Color::hex('#4285f4'))
-                            ->outlined(false)
-                            ->stateless(false)
-                            ->scopes(['...'])
-                            ->with(['...']),
-                    ])
-                    // (optional) Override the panel slug to be used in the oauth routes. Defaults to the panel's configured path.
+                    ->providers($this->getSocialiteProviders())
                     ->slug('admin')
-                    // (optional) Enable/disable registration of new (socialite-) users.
-                    ->registration(false)
-                    // (optional) Enable/disable registration of new (socialite-) users using a callback.
-                    // In this example, a login flow can only continue if there exists a user (Authenticatable) already.
-                    ->registration(fn (string $provider, SocialiteUserContract $oauthUser, ?Authenticatable $user) => (bool) $user)
-                    // (optional) Change the associated model class.
-                    ->userModelClass(\App\Models\User::class)
-                    // (optional) Change the associated socialite class (see below).
-                    ->socialiteUserModelClass(\App\Models\SocialiteUser::class),
+                    ->registration(function (string $provider, SocialiteUserContract $oauthUser, ?Authenticatable $user) {
+                        $accountSettings = app(AccountSettings::class);
+                        return match($provider) {
+                            'google' => $accountSettings->auth_google_registration,
+                            'oauth0' => $accountSettings->auth_oauth0_registration,
+                            'laravelpassport' => $accountSettings->auth_laravelpassport_registration,
+                        };
+                        return (bool) $user;
+                    }),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -94,5 +83,60 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+
+
+        $accountSettings = app(AccountSettings::class);
+
+        if ($accountSettings->user_registration) {
+            $panel->registration();
+        }
+
+        if ($accountSettings->user_registration) {
+            $panel->emailVerification();
+        }
+
+        if ($accountSettings->user_password_reset) {
+            $panel->passwordReset();
+        }
+
+        return $panel;
+    }
+
+    private function getSocialiteProviders(): array
+    {
+        $providers = [];
+        $accountSettings = app(AccountSettings::class);
+
+        if ($accountSettings->auth_google_enabled) {
+            $providers[] = Provider::make('google')
+                ->label('Google')
+                ->icon('fab-google')
+                ->color(Color::hex('#4285f4'))
+                ->outlined(false)
+                ->stateless($accountSettings->auth_google_stateless)
+                ->scopes($accountSettings->auth_google_scopes ?? []);
+        }
+
+        if ($accountSettings->auth_oauth0_enabled) {
+            $providers[] = Provider::make('auth0')
+                ->label($accountSettings->auth_oauth0_title)
+                ->color(Color::hex($accountSettings->auth_oauth0_color))
+                ->outlined(false)
+                ->stateless($accountSettings->auth_oauth0_stateless)
+                ->scopes($accountSettings->auth_oauth0_scopes)
+                ->with($accountSettings->auth_oauth0_extra_parameters ?? []);
+        }
+
+        if ($accountSettings->auth_laravelpassport_enabled) {
+            $providers[] = Provider::make('laravelpassport')
+                ->label($accountSettings->auth_laravelpassport_title)
+                ->color(Color::hex($accountSettings->auth_laravelpassport_color))
+                ->outlined(false)
+                ->stateless($accountSettings->auth_laravelpassport_stateless)
+                ->scopes($accountSettings->auth_laravelpassport_scopes ?? [])
+                ->with($accountSettings->auth_laravelpassport_extra_parameters ?? []);
+        }
+
+        return $providers;
     }
 }

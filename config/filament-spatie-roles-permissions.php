@@ -2,27 +2,146 @@
 
 return [
 
-    'preload_roles' => false,
+    'resources' => [
+        'PermissionResource' => \Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource::class,
+        'RoleResource' => \Althinect\FilamentSpatieRolesPermissions\Resources\RoleResource::class,
+    ],
 
-    'preload_permissions' => false,
+    'preload_roles' => true,
+
+    'preload_permissions' => true,
 
     'navigation_section_group' => 'filament-spatie-roles-permissions::filament-spatie.section.roles_and_permissions', // Default uses language constant
 
-    'team_model' => \App\Models\Team::class,
+    // 'team_model' => \App\Models\Team::class,
+
+    'scope_to_tenant' => true,
+    
+    'scope_roles_to_tenant' => true,
+    'scope_premissions_to_tenant' => false,
+
+    'super_admin_role_name' => 'Super Admin',
 
     /*
-     * Set to false to remove from navigation
+     * Set as false to remove from navigation.
      */
     'should_register_on_navigation' => [
+        'permissions' => true,
+        'roles' => true,
+    ],
+
+    'should_show_permissions_for_roles' => true,
+
+    /*
+     * Set as true to use simple modal resource.
+     */
+    'should_use_simple_modal_resource' => [
         'permissions' => false,
-        'roles' => false
+        'roles' => false,
+    ],
+
+    /*
+     * Set as true to remove empty state actions.
+     */
+    'should_remove_empty_state_actions' => [
+        'permissions' => false,
+        'roles' => false,
+    ],
+
+    /**
+     * Set to true to redirect to the resource index instead of the view
+     */
+    'should_redirect_to_index' => [
+        'permissions' => [
+            'after_create' => false,
+            'after_edit' => false
+        ],
+        'roles' => [
+            'after_create' => false,
+            'after_edit' => false
+        ],
+    ],
+
+    /**
+     * Set to true to display relation managers in the resources
+     */
+    'should_display_relation_managers' => [
+        'permissions' => true,
+        'users' => true,
+        'roles' => true,
+    ],
+
+    /*
+     * If you want to place the Resource in a Cluster, then set the required Cluster class.
+     * Eg. \App\Filament\Clusters\Cluster::class
+     */
+    'clusters' => [
+        'permissions' => null,
+        'roles' => null,
+    ],
+
+    'guard_names' => [
+        'web' => 'web',
+        'api' => 'api',
+    ],
+
+    'toggleable_guard_names' => [
+        'roles' => [
+            'isToggledHiddenByDefault' => true,
+        ],
+        'permissions' => [
+            'isToggledHiddenByDefault' => true,
+        ],
+    ],
+
+    'default_guard_name' => null,
+
+    // if false guard option will not be show on screen. You should set a default_guard_name in this case
+    'should_show_guard' => true,
+
+    'model_filter_key' => 'return \'%\'.$value;', // Eg: 'return \'%\'.$key.'\%\';'
+
+    'user_name_column' => 'name',
+
+    /*
+     * If user_name_column is an accessor from a model, then list columns to search.
+     * Default: null, will search by user_name_column
+     *
+     * Example:
+     *
+     * 'user_name_searchable_columns' => ['first_name', 'last_name']
+     *
+     * and in your model:
+     *
+     * public function getFullNameAttribute() {
+     *    return $this->first_name . ' ' . $this->last_name;
+     * }
+     *
+     */
+    'user_name_searchable_columns' => ['name'],
+
+    /*
+     * Icons to use for navigation
+     */
+    'icons' => [
+        'role_navigation' => 'heroicon-o-lock-closed',
+        'permission_navigation' => 'heroicon-o-lock-closed',
+    ],
+
+    /*
+     *  Navigation items order - int value, false  restores the default position
+     */
+
+    'sort' => [
+        'role_navigation' => false,
+        'permission_navigation' => false
     ],
 
     'generator' => [
 
         'guard_names' => [
             'web',
-            //'api'
+            'api',
         ],
 
         'permission_affixes' => [
@@ -36,14 +155,13 @@ return [
             'createPermission' => 'create',
             'updatePermission' => 'update',
             'deletePermission' => 'delete',
+            'deleteAnyPermission' => 'delete-any',
+            'replicatePermission' => 'replicate',
             'restorePermission' => 'restore',
+            'restoreAnyPermission' => 'restore-any',
+            'reorderPermission' => 'reorder',
             'forceDeletePermission' => 'force-delete',
-
-            /*
-             * Additional Resource Permissions
-             */
-            'replicate',
-            'reorder',
+            'forceDeleteAnyPermission' => 'force-delete-any',
         ],
 
         /*
@@ -67,38 +185,39 @@ return [
          * Include directories which consists of models.
          */
         'model_directories' => [
-            app_path('Models')
+            app_path('Models'),
             //app_path('Domains/Forum')
         ],
 
         /*
-         * Define custom_models in snake-case
+         * Define custom_models
          */
         'custom_models' => [
             //
         ],
 
         /*
-         * Define excluded_models in snake-case
+         * Define excluded_models
          */
         'excluded_models' => [
             //
         ],
 
         'excluded_policy_models' => [
-            \App\Models\User::class
+            \App\Models\User::class,
         ],
 
         /*
-         * Define any other permission here
+         * Define any other permission that should be synced with the DB
          */
         'custom_permissions' => [
             //'view-log'
         ],
 
-
         'user_model' => \App\Models\User::class,
 
-        'policies_namespace' => 'App\Policies'
+        'user_model_class' => 'User',
+
+        'policies_namespace' => 'App\Policies',
     ],
 ];

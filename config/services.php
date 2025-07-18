@@ -36,4 +36,23 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_CLIENT_REDIRECT'),
     ],
+
+    'auth0' => [
+        'client_id' => env('AUTH0_CLIENT_ID', 28),
+        'client_secret' => env('AUTH0_CLIENT_SECRET', 'dkM3TJYeLooBNQsJxW6jRB3YZBW9oAN7njSylBqE'),
+        'redirect' => env('AUTH0_REDIRECT_URI', 'http://localhost:8080/admin/oauth/callback/auth0'),
+        'base_url' => env('AUTH0_BASE_URL', 'http://localhost:8101/oauth'),
+    ],
+
+    'laravelpassport' => [    
+        'client_id' => env('LARAVELPASSPORT_CLIENT_ID', 28),  
+        'client_secret' => env('LARAVELPASSPORT_CLIENT_SECRET', 'dkM3TJYeLooBNQsJxW6jRB3YZBW9oAN7njSylBqE'),  
+        'redirect' => env('LARAVELPASSPORT_REDIRECT_URI', 'http://localhost:8080/admin/oauth/callback/laravelpassport'),
+        'host' => env('LARAVELPASSPORT_HOST', 'http://localhost:8101'),
+        'userinfo_uri' => 'api/user/me',
+        // 'authorize_uri' => 'oauth/authorize',
+        // 'token_uri'     => 'oauth/token',
+        // 'userinfo_uri'  => 'api/user',
+    ],
+
 ];
