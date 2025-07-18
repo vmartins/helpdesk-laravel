@@ -23,7 +23,9 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use DutchCodingCompany\FilamentSocialite\FilamentSocialitePlugin;
 use DutchCodingCompany\FilamentSocialite\Provider;
-use Filament\Support\Colors;
+use Filament\Navigation\MenuItem;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Laravel\Socialite\Contracts\User as SocialiteUserContract;
 use Illuminate\Contracts\Auth\Authenticatable;
 
@@ -31,18 +33,41 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        if (app()->runningInConsole()) return $panel->id('admin');
+        // if (app()->runningInConsole()) return $panel->id('admin');
 
         $panel
             ->default()
             ->id('admin')
             ->path('admin')
             ->login()
-            ->profile()
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->userMenuItems([
+                'profile' => MenuItem::make()
+                    ->label(fn() => auth()->user()->name)
+                    ->url(fn (): string => EditProfilePage::getUrl())
+                    ->icon('heroicon-m-user-circle')
+                    //If you are using tenancy need to check with the visible method where ->company() is the relation between the user and tenancy model as you called
+                    ->visible(function (): bool {
+                        return auth()->user()->exists() 
+                            && !auth()->user()->socialiteUsers()->exists();
+                    }),
+            ])
             ->plugins([
+                FilamentEditProfilePlugin::make()
+                    ->slug('my-profile')
+                    ->setTitle(__('My Profile'))
+                    ->setNavigationLabel(__('My Profile'))
+                    ->setNavigationGroup(__('Group Profile'))
+                    ->setIcon('heroicon-o-user')
+                    ->setSort(10)
+                    ->shouldRegisterNavigation(false)
+                    ->shouldShowEmailForm()
+                    ->shouldShowDeleteAccountForm(false)
+                    ->shouldShowBrowserSessionsForm()
+                    ,
+
                 FilamentApexChartsPlugin::make(),
 
                 FilamentSocialitePlugin::make()
@@ -91,7 +116,7 @@ class AdminPanelProvider extends PanelProvider
             $panel->registration();
         }
 
-        if ($accountSettings->user_registration) {
+        if ($accountSettings->user_email_verification) {
             $panel->emailVerification();
         }
 

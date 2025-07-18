@@ -39,9 +39,9 @@ return [
 
     'auth0' => [
         'client_id' => env('AUTH0_CLIENT_ID', 28),
-        'client_secret' => env('AUTH0_CLIENT_SECRET', 'dkM3TJYeLooBNQsJxW6jRB3YZBW9oAN7njSylBqE'),
-        'redirect' => env('AUTH0_REDIRECT_URI', 'http://localhost:8080/admin/oauth/callback/auth0'),
-        'base_url' => env('AUTH0_BASE_URL', 'http://localhost:8101/oauth'),
+        'client_secret' => env('AUTH0_CLIENT_SECRET'),
+        'redirect' => env('AUTH0_REDIRECT_URI'),
+        'base_url' => env('AUTH0_BASE_URL'),
     ],
 
     'laravelpassport' => [    

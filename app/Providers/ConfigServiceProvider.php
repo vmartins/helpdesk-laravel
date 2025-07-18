@@ -21,7 +21,7 @@ class ConfigServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (app()->runningInConsole()) return;
+        // if (app()->runningInConsole()) return;
         
         $generalSettings = app(\App\Settings\GeneralSettings::class);
 
