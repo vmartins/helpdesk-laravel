@@ -10,6 +10,7 @@ use App\Models\Ticket;
 use App\Models\TicketStatus;
 use App\Models\Unit;
 use App\Models\User;
+use App\Settings\TicketSettings;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
@@ -121,8 +122,8 @@ class TicketResource extends Resource
                 Section::make()->schema([
                     Forms\Components\Select::make('priority_id')
                         ->label(__('Priority'))
-                        ->options(Priority::all()
-                            ->pluck('name', 'id'))
+                        ->options(Priority::all()->pluck('name', 'id'))
+                        ->default(app(TicketSettings::class)->default_priority)
                         ->searchable()
                         ->required(),
 
