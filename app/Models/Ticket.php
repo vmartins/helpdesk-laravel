@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $priority_id
  * @property int $unit_id
  * @property int $owner_id
- * @property int $problem_category_id
+ * @property int $category_id
  * @property string $title
  * @property string $description
  * @property int $ticket_statuses_id
@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Priority $priority
  * @property Unit $unit
  * @property null|User $user
- * @property ProblemCategory $problem_category
+ * @property Category $category
  * @property TicketStatus $ticket_status
  * @property Collection|Comment[] $comments
  */
@@ -44,7 +44,7 @@ class Ticket extends Model
         'priority_id' => 'int',
         'unit_id' => 'int',
         'owner_id' => 'int',
-        'problem_category_id' => 'int',
+        'category_id' => 'int',
         'ticket_statuses_id' => 'int',
         'responsible_id' => 'int',
         'approved_at' => 'datetime',
@@ -55,7 +55,7 @@ class Ticket extends Model
         'priority_id',
         'unit_id',
         'owner_id',
-        'problem_category_id',
+        'category_id',
         'title',
         'description',
         'ticket_statuses_id',
@@ -105,13 +105,13 @@ class Ticket extends Model
     }
 
     /**
-     * Get the problemCategory that owns the Ticket.
+     * Get the Category that owns the Ticket.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function problemCategory()
+    public function category()
     {
-        return $this->belongsTo(ProblemCategory::class);
+        return $this->belongsTo(Category::class);
     }
 
     /**

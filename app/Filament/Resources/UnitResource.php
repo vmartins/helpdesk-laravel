@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UnitResource\Pages;
-use App\Filament\Resources\UnitResource\RelationManagers\ProblemCategoriesRelationManager;
+use App\Filament\Resources\UnitResource\RelationManagers\CategoriesRelationManager;
 use App\Filament\Resources\UnitResource\RelationManagers\UsersRelationManager;
 use App\Models\Unit;
 use Filament\Forms;
@@ -67,7 +67,7 @@ class UnitResource extends Resource
     public static function getRelations(): array
     {
         return [
-            ProblemCategoriesRelationManager::class,
+            CategoriesRelationManager::class,
             UsersRelationManager::class,
         ];
     }

@@ -9,9 +9,9 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
 
-class ProblemCategoriesRelationManager extends RelationManager
+class CategoriesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'problemCategories';
+    protected static string $relationship = 'categories';
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {

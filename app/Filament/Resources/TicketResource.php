@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TicketResource\Pages;
 use App\Filament\Resources\TicketResource\RelationManagers\CommentsRelationManager;
 use App\Models\Priority;
-use App\Models\ProblemCategory;
+use App\Models\Category;
 use App\Models\Ticket;
 use App\Models\TicketStatus;
 use App\Models\Unit;
@@ -46,25 +46,31 @@ class TicketResource extends Resource
                         ->afterStateUpdated(function ($state, callable $get, callable $set) {
                             $unit = Unit::find($state);
                             if ($unit) {
-                                $problemCategoryId = (int) $get('problem_category_id');
-                                if ($problemCategoryId && $problemCategory = ProblemCategory::find($problemCategoryId)) {
-                                    if ($problemCategory->unit_id !== $unit->id) {
-                                        $set('problem_category_id', null);
+                                $categoryId = (int) $get('category_id');
+                                if ($categoryId && $category = Category::find($categoryId)) {
+                                    if ($category->unit_id !== $unit->id) {
+                                        $set('category_id', null);
                                     }
                                 }
                             }
                         })
                         ->reactive(),
 
-                    Forms\Components\Select::make('problem_category_id')
-                        ->label(__('Problem Category'))
+                    Forms\Components\Select::make('category_id')
+                        ->label(__('Category'))
                         ->options(function (callable $get, callable $set) {
+                            return Category::where(function($query) use ($get) {
+                                $query->whereNull('unit_id');
+                                if ($get('unit_id')) {
+                                    $query->orWhere('unit_id', $get('unit_id'));
+                                }
+                            })->get()->pluck('name', 'id');
                             $unit = Unit::find($get('unit_id'));
                             if ($unit) {
-                                return $unit->problemCategories->pluck('name', 'id');
+                                return $unit->categories->pluck('name', 'id');
                             }
 
-                            return ProblemCategory::all()->pluck('name', 'id');
+                            return Category::all()->pluck('name', 'id');
                         })
                         ->searchable()
                         ->required(),
@@ -173,9 +179,9 @@ class TicketResource extends Resource
                     ->translateLabel()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('problemCategory.name')
+                Tables\Columns\TextColumn::make('category.name')
                     ->searchable()
-                    ->label(__('Problem Category'))
+                    ->label(__(' Category'))
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('ticketStatus.name')
                     ->label(__('Status'))

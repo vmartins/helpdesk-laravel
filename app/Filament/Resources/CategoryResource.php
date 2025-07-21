@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProblemCategoryResource\Pages;
-use App\Filament\Resources\ProblemCategoryResource\RelationManagers\TicketsRelationManager;
-use App\Models\ProblemCategory;
+use App\Filament\Resources\CategoryResource\Pages;
+use App\Filament\Resources\CategoryResource\RelationManagers\TicketsRelationManager;
+use App\Models\Category;
 use App\Models\Unit;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -14,9 +14,9 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ProblemCategoryResource extends Resource
+class CategoryResource extends Resource
 {
-    protected static ?string $model = ProblemCategory::class;
+    protected static ?string $model = Category::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-link';
 
@@ -26,11 +26,6 @@ class ProblemCategoryResource extends Resource
     {
         return __('Category');
     }
-    
-    // public static function getPluralModelLabel(): string
-    // {
-    //     return self::getModelLabel();
-    // }
 
     public static function form(Form $form): Form
     {
@@ -39,8 +34,8 @@ class ProblemCategoryResource extends Resource
                 Forms\Components\Select::make('unit_id')
                     ->label(__('Unit'))
                     ->options(Unit::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->required(),
+                    ->searchable(),
+
                 Forms\Components\TextInput::make('name')
                     ->translateLabel()
                     ->required()
@@ -83,10 +78,10 @@ class ProblemCategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProblemCategories::route('/'),
-            'create' => Pages\CreateProblemCategory::route('/create'),
-            'view' => Pages\ViewProblemCategory::route('/{record}'),
-            'edit' => Pages\EditProblemCategory::route('/{record}/edit'),
+            'index' => Pages\ListCategories::route('/'),
+            'create' => Pages\CreateCategory::route('/create'),
+            'view' => Pages\ViewCategory::route('/{record}'),
+            'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
 
@@ -97,7 +92,7 @@ class ProblemCategoryResource extends Resource
                 SoftDeletingScope::class,
             ])->where(function ($query) {
                 if (auth()->user()->hasRole('Admin Unit')) {
-                    $query->where('problem_categories.unit_id', auth()->user()->unit_id);
+                    $query->where('categories.unit_id', auth()->user()->unit_id);
                 }
             });
     }

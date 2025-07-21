@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @property int $id
  * @property string $name
- * @property Collection|ProblemCategory[] $problem_categories
+ * @property Collection|Category[] $categories
  * @property Collection|Ticket[] $tickets
  * @property Collection|User[] $users
  */
@@ -31,13 +31,13 @@ class Unit extends Model
     ];
 
     /**
-     * Get all of the problemCategories for the Unit
+     * Get all of the Categories for the Unit
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function problemCategories()
+    public function categories()
     {
-        return $this->hasMany(ProblemCategory::class);
+        return $this->hasMany(Category::class);
     }
 
     /**

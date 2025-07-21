@@ -45,7 +45,7 @@ class TicketsRelationManager extends RelationManager
                     ->translateLabel()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('problemCategory.name')
+                Tables\Columns\TextColumn::make('category.name')
                     ->label(__('Category'))
                     ->searchable()
                     ->toggleable(),

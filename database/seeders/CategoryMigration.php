@@ -2,32 +2,32 @@
 
 namespace Database\Seeders;
 
-use App\Models\ProblemCategory;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 
-class ProblemCategoryMigration extends Seeder
+class CategoryMigration extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        ProblemCategory::insert([
+        Category::insert([
             [
                 'unit_id' => 1,
-                'name' => 'Problem One at Sales Department',
+                'name' => ' One at Sales Department',
             ],
             [
                 'unit_id' => 1,
-                'name' => 'Problem Two at Sales Department',
+                'name' => ' Two at Sales Department',
             ],
             [
                 'unit_id' => 2,
-                'name' => 'Problem One at Technical Support',
+                'name' => ' One at Technical Support',
             ],
             [
                 'unit_id' => 3,
-                'name' => 'Problem One at Billing Support',
+                'name' => ' One at Billing Support',
             ],
         ]);
     }

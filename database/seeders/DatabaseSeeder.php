@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             PrioritySeeder::class,
             TicketStatusSeeder::class,
-            ProblemCategoryMigration::class,
+            CategoryMigration::class,
             TicketSeeder::class,
         ]);
     }

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filament\Resources\ProblemCategoryResource\Pages;
+namespace App\Filament\Resources\CategoryResource\Pages;
 
-use App\Filament\Resources\ProblemCategoryResource;
+use App\Filament\Resources\CategoryResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-class EditProblemCategory extends EditRecord
+class EditCategory extends EditRecord
 {
-    protected static string $resource = ProblemCategoryResource::class;
+    protected static string $resource = CategoryResource::class;
 
     protected function getHeaderActions(): array
     {
