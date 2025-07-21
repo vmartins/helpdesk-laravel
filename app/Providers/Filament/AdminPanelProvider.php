@@ -33,8 +33,6 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        // if (app()->runningInConsole()) return $panel->id('admin');
-
         $panel
             ->default()
             ->id('admin')

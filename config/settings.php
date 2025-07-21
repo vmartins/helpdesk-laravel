@@ -38,10 +38,24 @@ return [
      */
     'repositories' => [
         'database' => [
-            'type' => Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository::class,
-            'model' => null,
-            'table' => null,
-            'connection' => null,
+            'type' => get_class(new class([
+                'model' => null,
+                'table' => null,
+                'connection' => null,
+            ]) extends \Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository {
+                public function getPropertiesInGroup(string $group): array
+                {
+                    if (app(\Symfony\Component\Console\Input\ArgvInput::class)->getFirstArgument() === "migrate") {
+                        return [];
+                    }
+
+                    return parent::getPropertiesInGroup($group);
+                }
+            }),
+            // 'type' => Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository::class,
+            // 'model' => null,
+            // 'table' => null,
+            // 'connection' => null,
         ],
         'redis' => [
             'type' => Spatie\LaravelSettings\SettingsRepositories\RedisSettingsRepository::class,

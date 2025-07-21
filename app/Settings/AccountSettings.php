@@ -2,8 +2,6 @@
 
 namespace App\Settings;
 
-use Spatie\LaravelSettings\Settings;
-
 class AccountSettings extends Settings
 {
     public bool $user_registration;
