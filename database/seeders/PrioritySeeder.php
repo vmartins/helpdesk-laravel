@@ -12,10 +12,8 @@ class PrioritySeeder extends Seeder
      */
     public function run(): void
     {
-        Priority::create(['id' => Priority::CRITICAL, 'name' => 'Critical/Urgent']);
-        Priority::create(['id' => Priority::HIGHT, 'name' => 'High']);
-        Priority::create(['id' => Priority::MEDIUM, 'name' => 'Medium']);
-        Priority::create(['id' => Priority::LOW, 'name' => 'Low']);
-        Priority::create(['id' => Priority::ENHANCEMENT, 'name' => 'Enhancement/Feature Request']);
+        Priority::create(['name' => 'Normal', 'sla' => 2880]);
+        Priority::create(['name' => 'Urgent', 'sla' => 1440]);
+        Priority::create(['name' => 'Critical', 'sla' => 480]);
     }
 }
