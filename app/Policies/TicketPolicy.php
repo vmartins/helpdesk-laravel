@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\Response;
+use App\Models\User;
 use App\Models\Ticket;
 use App\Models\TicketStatus;
-use App\Models\User;
+use App\Settings\TicketSettings;
 
 class TicketPolicy
 {
@@ -22,8 +22,13 @@ class TicketPolicy
      */
     public function view(User $user, Ticket $ticket): bool
     {
-        // The admin unit can view tickets that are assigned to their specific unit.
-        if ($user->hasRole('Admin Unit')) {
+        // Display all tickets to Super Admin and Global Viewer
+        if ($user->hasAnyRole(['Super Admin', 'Global Viewer'])) {
+            return true;
+        }
+
+        // The Admin Unit/Unit Viewer can view tickets that are assigned to their specific unit.
+        if ($user->hasAnyRole(['Admin Unit', 'Unit Viewer'])) {
             return $user->id == $ticket->owner_id || $ticket->unit_id == $user->unit_id;
         }
 
@@ -49,7 +54,18 @@ class TicketPolicy
      */
     public function update(User $user, Ticket $ticket): bool
     {
-        return $this->view($user, $ticket);
+        // The admin unit can update tickets that are assigned to their specific unit.
+        if ($user->hasRole('Admin Unit')) {
+            return $user->id == $ticket->owner_id || $ticket->unit_id == $user->unit_id;
+        }
+
+        // The staff unit can update tickets that have been assigned to them.
+        if ($user->hasRole('Staff Unit')) {
+            return $user->id == $ticket->owner_id ||  $ticket->responsible_id == $user->id;
+        }
+
+        // The user can view their own ticket
+        return $user->id == $ticket->owner_id;
     }
 
     /**

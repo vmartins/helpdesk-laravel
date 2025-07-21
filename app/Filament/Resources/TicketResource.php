@@ -216,31 +216,29 @@ class TicketResource extends Resource
     /**
      * Display tickets based on each role.
      *
-     * If it is a Super Admin, then display all tickets.
-     * If it is a Admin Unit, then display tickets based on the tickets they have created and their unit id.
+     * If it is a Super Admin/Global Viewer, then display all tickets.
+     * If it is a Admin Unit/Unit Viewer, then display tickets based on the tickets they have created and their unit id.
      * If it is a Staff Unit, then display tickets based on the tickets they have created and the tickets assigned to them.
      * If it is a Regular User, then display tickets based on the tickets they have created.
      */
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->where(function ($query) {
-                // Display all tickets to Super Admin
-                if (auth()->user()->hasRole('Super Admin')) {
-                    return;
-                }
+        return parent::getEloquentQuery()->where(function ($query) {
+            $user = auth()->user();
 
-                if (auth()->user()->hasRole('Admin Unit')) {
-                    $query->where('tickets.unit_id', auth()->user()->unit_id)->orWhere('tickets.owner_id', auth()->id());
-                } elseif (auth()->user()->hasRole('Staff Unit')) {
-                    $query->where('tickets.responsible_id', auth()->id())->orWhere('tickets.owner_id', auth()->id());
-                } else {
-                    $query->where('tickets.owner_id', auth()->id());
-                }
-            })
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+            if ($user->hasAnyRole(['Super Admin', 'Global Viewer'])) {
+                return;
+            }
+
+            if ($user->hasAnyRole(['Admin Unit', 'Unit Viewer'])) {
+                $query->where('tickets.unit_id', $user->unit_id)->orWhere('tickets.owner_id', $user->id);
+            } elseif ($user->hasRole('Staff Unit')) {
+                $query->where('tickets.responsible_id', $user->id)->orWhere('tickets.owner_id', $user->id);
+            } else {
+                $query->where('tickets.owner_id', $user->id);
+            }
+        })
+        ->withoutGlobalScopes([SoftDeletingScope::class]);
     }
 
 }

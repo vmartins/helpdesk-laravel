@@ -26,5 +26,15 @@ class RoleSeeder extends Seeder
             'name' => 'Staff Unit',
             'guard_name' => 'web',
         ]);
+
+        Role::create([
+            'name' => 'Global Viewer',
+            'guard_name' => 'web',
+        ]);
+
+        Role::create([
+            'name' => 'Unit Viewer',
+            'guard_name' => 'web',
+        ]);
     }
 }
