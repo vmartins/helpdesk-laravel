@@ -152,6 +152,12 @@ class TicketResource extends Resource
                                 ->hasAnyRole(['Super Admin', 'Admin Unit']),
                         ),
 
+                    Forms\Components\Placeholder::make('owner_id')
+                        ->label(__('Owner'))
+                        ->content(fn (
+                            ?Ticket $record,
+                        ): string => $record ? $record->owner->name : '-'),
+
                     Forms\Components\Placeholder::make('created_at')
                         ->translateLabel()
                         ->content(fn (

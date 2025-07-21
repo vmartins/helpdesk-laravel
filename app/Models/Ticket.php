@@ -10,7 +10,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 /**
  * Class Ticket.
  *
@@ -38,7 +39,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Ticket extends Model
 {
     use SoftDeletes;
-    protected $table = 'tickets';
+    use LogsActivity;
 
     protected $casts = [
         'priority_id' => 'int',
@@ -63,6 +64,26 @@ class Ticket extends Model
         'approved_at',
         'solved_at',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'priority.name',
+                'unit.name',
+                'owner.name',
+                'responsible.name',
+                'category.name',
+                'title',
+                'description',
+                'ticketStatus.name',
+                'approved_at',
+                'solved_at',
+                'comments',
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     /**
      * Get the priority that owns the Ticket.
