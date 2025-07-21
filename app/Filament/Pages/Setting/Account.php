@@ -22,6 +22,11 @@ class Account extends SettingsPage
         return __('Settings');
     }
 
+    public function getTitle(): string
+    {
+        return __('Account');
+    }
+
     public static function canAccess(): bool
     {
         return Gate::check('viewAny', Setting::class);
@@ -31,35 +36,35 @@ class Account extends SettingsPage
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Account')
+                Forms\Components\Section::make(__('Account'))
                     ->schema([
                         Forms\Components\Toggle::make('user_registration')
                             ->label(__('Allow User Registration'))
-                            ->helperText('Allow users to create accounts on the login screen')
+                            ->helperText(__('Allow users to create accounts on the login screen'))
                             ->required(),
 
                         Forms\Components\Toggle::make('user_email_verification')
                             ->label(__('Email Verification'))
-                            ->helperText('Require users to validate their email to login')
+                            ->helperText(__('Require users to validate their email to login'))
                             ->required(),
 
                         Forms\Components\Toggle::make('user_password_reset')
                             ->label(__('Password Reset'))
-                            ->helperText('Allow users to recover their password')
+                            ->helperText(__('Allow users to recover their password'))
                             ->required(),
                     ]),
 
-                Forms\Components\Section::make('Auth with Google')
+                Forms\Components\Section::make(__('Auth with Google'))
                     ->schema([
                         Forms\Components\Toggle::make('auth_google_enabled')
                             ->label(__('Enabled'))
                             ->live()
-                            ->helperText('Allow users to sign in with Google account')
+                            ->helperText(__('Allow users to sign in with Google account'))
                             ->required(),
 
                         Forms\Components\Toggle::make('auth_google_registration')
                             ->label(__('Allow Registration'))
-                            ->helperText('Allow users to be registered when logging in with their Google account')
+                            ->helperText(__('Allow users to be registered when logging in with their Google account'))
                             ->visible(fn ($get) => $get('auth_google_enabled'))
                             ->required(),
 
@@ -89,12 +94,12 @@ class Account extends SettingsPage
                             ->visible(fn ($get) => $get('auth_google_enabled')),
                     ]),
 
-                Forms\Components\Section::make('Auth with OAuth0')
+                Forms\Components\Section::make(__('Auth with OAuth0'))
                     ->schema([
                         Forms\Components\Toggle::make('auth_oauth0_enabled')
                             ->label(__('Enabled'))
                             ->live()
-                            ->helperText('Allow users to sign in with OAuth0')
+                            ->helperText(__('Allow users to sign in with OAuth0'))
                             ->required(),
 
                         Forms\Components\Toggle::make('auth_oauth0_registration')
@@ -148,17 +153,17 @@ class Account extends SettingsPage
                             ->visible(fn ($get) => $get('auth_oauth0_enabled')),
                     ]),
 
-                Forms\Components\Section::make('Auth with Laravel Passport')
+                Forms\Components\Section::make(__('Auth with Laravel Passport'))
                     ->schema([
                         Forms\Components\Toggle::make('auth_laravelpassport_enabled')
                             ->label(__('Enabled'))
                             ->live()
-                            ->helperText('Allow users to sign in with Laravel Passport')
+                            ->helperText(__('Allow users to sign in with Laravel Passport'))
                             ->required(),
 
                         Forms\Components\Toggle::make('auth_laravelpassport_registration')
                             ->label(__('Allow Registration'))
-                            ->helperText('Allow users to be registered when logging in with Laravel Passport account')
+                            ->helperText(__('Allow users to be registered when logging in with Laravel Passport account'))
                             ->visible(fn ($get) => $get('auth_laravelpassport_enabled'))
                             ->required(),
 

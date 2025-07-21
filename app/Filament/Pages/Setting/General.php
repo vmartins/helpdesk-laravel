@@ -22,6 +22,11 @@ class General extends SettingsPage
         return __('Settings');
     }
 
+    public function getTitle(): string
+    {
+        return __('General');
+    }
+
     public static function canAccess(): bool
     {
         return Gate::check('viewAny', Setting::class);
@@ -31,21 +36,21 @@ class General extends SettingsPage
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('General')
+                Forms\Components\Section::make(__('General'))
                     ->schema([
                         Forms\Components\TextInput::make('site_title')
                             ->label(__('Allow User Registration'))
-                            ->helperText('Title of site. Used as page title')
+                            ->helperText(__('Title of site. Used as page title'))
                             ->required(),
 
                         Forms\Components\TextInput::make('site_url')
                             ->label(__('Site URL'))
-                            ->helperText('Publicly accessible URL of this site')
+                            ->helperText(__('Publicly accessible URL of this site'))
                             ->required(),
 
                         Forms\Components\Select::make('site_timezone')
                             ->label(__('Timezone'))
-                            ->helperText('Set the local server timezone for date display')
+                            ->helperText(__('Set the local server timezone for date display'))
                             ->options(collect(\DateTimeZone::listIdentifiers(\DateTimeZone::ALL))->mapWithKeys(fn($item) => [$item => $item]))
                             ->required(),
 
