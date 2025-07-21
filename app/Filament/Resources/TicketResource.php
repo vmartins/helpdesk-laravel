@@ -39,8 +39,18 @@ class TicketResource extends Resource
                 Section::make()->schema([
                     Forms\Components\Select::make('unit_id')
                         ->label(__('Work Unit'))
-                        ->options(Unit::all()
-                            ->pluck('name', 'id'))
+                        ->options(Unit::where(function($query) {
+                            $user = auth()->user();
+
+                            if ($user->hasAnyRole(['Super Admin'])) {
+                                return;
+                            }
+
+                            if ($user->unit_id) {
+                                $query->whereId($user->unit_id);
+                            }
+                        })->get()->pluck('name', 'id'))
+                        ->default(auth()->user()->unit_id)
                         ->searchable()
                         ->required()
                         ->afterStateUpdated(function ($state, callable $get, callable $set) {
