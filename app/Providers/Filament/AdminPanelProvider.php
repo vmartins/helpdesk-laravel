@@ -46,7 +46,6 @@ class AdminPanelProvider extends PanelProvider
                     ->label(fn() => auth()->user()->name)
                     ->url(fn (): string => EditProfilePage::getUrl())
                     ->icon('heroicon-m-user-circle')
-                    //If you are using tenancy need to check with the visible method where ->company() is the relation between the user and tenancy model as you called
                     ->visible(function (): bool {
                         return auth()->user()->exists() 
                             && !auth()->user()->socialiteUsers()->exists();
@@ -61,10 +60,9 @@ class AdminPanelProvider extends PanelProvider
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
                     ->shouldRegisterNavigation(false)
-                    ->shouldShowEmailForm()
-                    ->shouldShowDeleteAccountForm(false)
-                    ->shouldShowBrowserSessionsForm()
-                    ,
+                    ->shouldShowEmailForm(false)
+                    ->shouldShowDeleteAccountForm(true)
+                    ->shouldShowBrowserSessionsForm(true),
 
                 FilamentApexChartsPlugin::make(),
 
