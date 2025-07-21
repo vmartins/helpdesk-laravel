@@ -23,14 +23,14 @@ class CommentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'comments';
 
-    protected function isTablePaginationEnabled(): bool
-    {
-        return false;
-    }
-
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return __('Comments');
+    }
+
+    public function isReadOnly(): bool
+    {
+        return false;
     }
 
     public function form(Form $form): Form
@@ -111,6 +111,7 @@ class CommentsRelationManager extends RelationManager
 
                 Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([]);
+            ->bulkActions([])
+            ->paginated(false);
     }
 }
