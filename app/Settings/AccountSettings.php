@@ -14,7 +14,6 @@ class AccountSettings extends Settings
     public bool $auth_google_stateless;
     public string $auth_google_client_id;
     public string $auth_google_client_secret;
-    public string $auth_google_redirect;
 
     public bool $auth_oauth0_enabled;
     public bool $auth_oauth0_registration;
@@ -25,7 +24,6 @@ class AccountSettings extends Settings
     public bool $auth_oauth0_stateless;
     public string $auth_oauth0_client_id;
     public string $auth_oauth0_client_secret;
-    public string $auth_oauth0_redirect;
     public string $auth_oauth0_base_url;
 
     public bool $auth_laravelpassport_enabled;
@@ -37,7 +35,6 @@ class AccountSettings extends Settings
     public bool $auth_laravelpassport_stateless;
     public string $auth_laravelpassport_client_id;
     public string $auth_laravelpassport_client_secret;
-    public string $auth_laravelpassport_redirect;
     public string $auth_laravelpassport_host;
     public string $auth_laravelpassport_authorize_uri;
     public string $auth_laravelpassport_token_uri;

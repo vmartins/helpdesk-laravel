@@ -16,7 +16,6 @@ return new class extends SettingsMigration
         $this->migrator->add('account.auth_google_stateless', false);
         $this->migrator->add('account.auth_google_client_id', '');
         $this->migrator->add('account.auth_google_client_secret', '');
-        $this->migrator->add('account.auth_google_redirect', '');
 
         $this->migrator->add('account.auth_oauth0_enabled', false);
         $this->migrator->add('account.auth_oauth0_registration', true);
@@ -27,7 +26,6 @@ return new class extends SettingsMigration
         $this->migrator->add('account.auth_oauth0_stateless', false);
         $this->migrator->add('account.auth_oauth0_client_id', '');
         $this->migrator->add('account.auth_oauth0_client_secret', '');
-        $this->migrator->add('account.auth_oauth0_redirect', '');
         $this->migrator->add('account.auth_oauth0_base_url', '');
 
         $this->migrator->add('account.auth_laravelpassport_enabled', false);
@@ -39,7 +37,6 @@ return new class extends SettingsMigration
         $this->migrator->add('account.auth_laravelpassport_stateless', false);
         $this->migrator->add('account.auth_laravelpassport_client_id', '');
         $this->migrator->add('account.auth_laravelpassport_client_secret', '');
-        $this->migrator->add('account.auth_laravelpassport_redirect', '');
         $this->migrator->add('account.auth_laravelpassport_host', '');
         $this->migrator->add('account.auth_laravelpassport_authorize_uri', 'oauth/authorize');
         $this->migrator->add('account.auth_laravelpassport_token_uri', 'oauth/token');

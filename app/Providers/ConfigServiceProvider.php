@@ -45,7 +45,7 @@ class ConfigServiceProvider extends ServiceProvider
             config(['services.google' => [
                 'client_id' => $accountSettings->auth_google_client_id,
                 'client_secret' => $accountSettings->auth_google_client_secret,
-                'redirect' => $accountSettings->auth_google_redirect,
+                'redirect' => url('admin/oauth/callback/google'),
             ]]);
         }
         
@@ -53,7 +53,7 @@ class ConfigServiceProvider extends ServiceProvider
             config(['services.auth0' => [
                 'client_id' => $accountSettings->auth_oauth0_client_id,
                 'client_secret' => $accountSettings->auth_oauth0_client_secret,
-                'redirect' => $accountSettings->auth_oauth0_redirect,
+                'redirect' => url('admin/oauth/callback/oauth0'),
                 'base_url' => $accountSettings->auth_oauth0_base_url,
             ]]);
         }
@@ -62,7 +62,7 @@ class ConfigServiceProvider extends ServiceProvider
             config(['services.laravelpassport' => [
                 'client_id' => $accountSettings->auth_laravelpassport_client_id,
                 'client_secret' => $accountSettings->auth_laravelpassport_client_secret,
-                'redirect' => $accountSettings->auth_laravelpassport_redirect,
+                'redirect' => url('admin/oauth/callback/laravelpassport'),
                 'host' => $accountSettings->auth_laravelpassport_host,
                 'authorize_uri' => $accountSettings->auth_laravelpassport_authorize_uri ?? 'oauth/authorize',
                 'token_uri'     => $accountSettings->auth_laravelpassport_token_uri ?? 'oauth/token',

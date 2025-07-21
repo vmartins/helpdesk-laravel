@@ -78,10 +78,10 @@ class Account extends SettingsPage
                             ->visible(fn ($get) => $get('auth_google_enabled'))
                             ->required(fn ($get) => $get('auth_google_enabled')),
 
-                        Forms\Components\TextInput::make('auth_google_redirect')
+                        Forms\Components\Placeholder::make('auth_google_redirect')
                             ->label(__('Redirect'))
-                            ->visible(fn ($get) => $get('auth_google_enabled'))
-                            ->required(fn ($get) => $get('auth_google_enabled')),
+                            ->content(url('admin/oauth/callback/google'))
+                            ->visible(fn ($get) => $get('auth_google_enabled')),
 
                         Forms\Components\TagsInput::make('auth_google_scopes')
                             ->label(__('Scopes'))
@@ -133,10 +133,10 @@ class Account extends SettingsPage
                             ->visible(fn ($get) => $get('auth_oauth0_enabled'))
                             ->required(fn ($get) => $get('auth_oauth0_enabled')),
 
-                        Forms\Components\TextInput::make('auth_oauth0_redirect')
+                        Forms\Components\Placeholder::make('auth_oauth0_redirect')
                             ->label(__('Redirect'))
-                            ->visible(fn ($get) => $get('auth_oauth0_enabled'))
-                            ->required(fn ($get) => $get('auth_oauth0_enabled')),
+                            ->content(url('admin/oauth/callback/oauth0'))
+                            ->visible(fn ($get) => $get('auth_oauth0_enabled')),
 
                         Forms\Components\TagsInput::make('auth_oauth0_scopes')
                             ->label(__('Scopes'))
@@ -192,10 +192,10 @@ class Account extends SettingsPage
                             ->visible(fn ($get) => $get('auth_laravelpassport_enabled'))
                             ->required(fn ($get) => $get('auth_laravelpassport_enabled')),
 
-                        Forms\Components\TextInput::make('auth_laravelpassport_redirect')
+                        Forms\Components\Placeholder::make('auth_laravelpassport_redirect')
                             ->label(__('Redirect'))
-                            ->visible(fn ($get) => $get('auth_laravelpassport_enabled'))
-                            ->required(fn ($get) => $get('auth_laravelpassport_enabled')),
+                            ->content(url('admin/oauth/callback/laravelpassport'))
+                            ->visible(fn ($get) => $get('auth_laravelpassport_enabled')),
 
                         Forms\Components\TextInput::make('auth_laravelpassport_authorize_uri')
                             ->label(__('Authorize URI'))
