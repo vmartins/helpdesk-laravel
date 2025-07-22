@@ -44,9 +44,22 @@ class General extends SettingsPage
                 Forms\Components\Section::make(__('General'))
                     ->schema([
                         Forms\Components\TextInput::make('site_title')
-                            ->label(__('Allow User Registration'))
+                            ->translateLabel()
                             ->helperText(__('Title of site. Used as page title'))
                             ->required(),
+
+                        Forms\Components\FileUpload::make('site_logo_image')
+                            ->translateLabel()
+                            ->image()
+                            ->imageEditor(),
+
+                        Forms\Components\TextInput::make('site_logo_height')
+                            ->translateLabel()
+                            ->helperText(__('Website logo image height (e.g. 3rem, 50px, ...)')),
+
+                        Forms\Components\FileUpload::make('site_favicon_image')
+                            ->image()
+                            ->imageEditor(),
 
                         Forms\Components\TextInput::make('site_url')
                             ->label(__('Site URL'))
