@@ -1,25 +1,16 @@
 <?php
 
-/**
- * Created by Reliese Model.
- */
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
-/**
- * Class TicketStatus.
- *
- * @property int $id
- * @property string $name
- * @property Collection|Ticket[] $tickets
- */
 class TicketStatus extends Model
 {
     use SoftDeletes;
+    use LogsActivity;
 
     public $timestamps = false;
     protected $table = 'ticket_statuses';
@@ -27,6 +18,16 @@ class TicketStatus extends Model
     protected $fillable = [
         'name',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                '*',
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     /**
      * Get all of the tickets for the TicketStatus.

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TicketResource\Pages\ActivityLog;
 
+use Closure;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
 use Rmsramos\Activitylog\Actions\Concerns\ActionContent;
@@ -13,6 +14,15 @@ use Rmsramos\Activitylog\Infolists\Components\TimeLineTitleEntry;
 class ActivityLogTimelineSimpleAction extends Action
 {
     use ActionContent;
+
+    protected ?Closure $modifyProperties;
+
+    public function modifyProperties(Closure $closure): static
+    {
+        $this->modifyProperties = $closure;
+
+        return $this;
+    }
 
     private function getSchema(): array
     {
@@ -29,7 +39,8 @@ class ActivityLogTimelineSimpleAction extends Action
                     TimeLineTitleEntry::make('activityData')
                         ->configureTitleUsing($this->modifyTitleUsing)
                         ->shouldConfigureTitleUsing($this->shouldModifyTitleUsing),
-                    TimeLinePropertiesEntry::make('activityData'),
+                    TimeLinePropertiesEntry::make('activityData')
+                        ->modifyProperties($this->modifyProperties),
                     TextEntry::make('log_name')
                         ->hiddenLabel()
                         ->badge(),

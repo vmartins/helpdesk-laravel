@@ -1,34 +1,32 @@
 <?php
 
-/**
- * Created by Reliese Model.
- */
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
-/**
- * Class Unit.
- *
- * @property int $id
- * @property string $name
- * @property Collection|Category[] $categories
- * @property Collection|Ticket[] $tickets
- * @property Collection|User[] $users
- */
 class Unit extends Model
 {
     use SoftDeletes;
-    public $timestamps = false;
+    use LogsActivity;
 
-    protected $table = 'units';
+    public $timestamps = false;
 
     protected $fillable = [
         'name',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                '*',
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     /**
      * Get all of the Categories for the Unit

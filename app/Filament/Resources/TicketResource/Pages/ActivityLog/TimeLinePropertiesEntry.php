@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TicketResource\Pages\ActivityLog;
 
+use Closure;
 use Filament\Infolists\Components\Entry;
 use Illuminate\Support\Str;
 use Illuminate\Support\HtmlString;
@@ -12,13 +13,20 @@ class TimeLinePropertiesEntry extends RmsramosTimeLinePropertiesEntry
 {
     use HasModifyState;
 
-    protected $originalState;
+    protected ?Closure $modifyProperties = null;
     
     protected function setup(): void
     {
         parent::setup();
 
         $this->configurePropertieEntry();
+    }
+
+    public function modifyProperties(?Closure $modifyProperties): TimeLinePropertiesEntry
+    {
+        $this->modifyProperties = $modifyProperties;
+
+        return $this;
     }
 
     private function configurePropertieEntry(): void
@@ -30,9 +38,11 @@ class TimeLinePropertiesEntry extends RmsramosTimeLinePropertiesEntry
 
     private function modifiedProperties($state): ?HtmlString
     {
-        $this->originalState = $state;
-        
         $properties = $state['properties'];
+
+        if ($this->modifyProperties !== null) {
+            $properties = $this->evaluate($this->modifyProperties, ['properties' => $properties]);
+        }
 
         if (! empty($properties)) {
             $changes    = $this->getPropertyChanges($properties);
@@ -74,14 +84,14 @@ class TimeLinePropertiesEntry extends RmsramosTimeLinePropertiesEntry
             if (isset($oldValues[$key]) && $oldValues[$key] != $newValue) {
                 $changes[] = trans('activitylog::infolists.components.from_oldvalue_to_newvalue',
                     [
-                        'key'       => $this->transKey($key),
+                        'key'       => $key,
                         'old_value' => htmlspecialchars($oldValue),
                         'new_value' => htmlspecialchars($newValue),
                     ]);
             } else {
                 $changes[] = trans('activitylog::infolists.components.to_newvalue',
                     [
-                        'key'       => $this->transKey($key),
+                        'key'       => $key,
                         'new_value' => htmlspecialchars($newValue),
                     ]);
             }
@@ -95,7 +105,7 @@ class TimeLinePropertiesEntry extends RmsramosTimeLinePropertiesEntry
         return array_map(
             fn ($key, $value) => sprintf(
                 __('activitylog::timeline.properties.getNewValues'),
-                $this->transKey($key),
+                $key,
                 htmlspecialchars($this->formatNewValue($value))
             ),
             array_keys($newValues),
@@ -108,14 +118,4 @@ class TimeLinePropertiesEntry extends RmsramosTimeLinePropertiesEntry
         return is_array($value) ? json_encode($value) : $value ?? '—';
     }
 
-    private function transKey($key): string
-    {
-        $className = (Str::kebab(class_basename(get_class($this->originalState['subject']))));
-
-        if (trans()->has("filament-activitylog.fields.{$className}.{$key}")) {
-            return trans("filament-activitylog.fields.{$className}.{$key}");
-        } else {
-            return $key;
-        }
-    }
 }

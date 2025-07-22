@@ -1,51 +1,18 @@
 <?php
 
-/**
- * Created by Reliese Model.
- */
-
 namespace App\Models;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
-/**
- * Class Ticket.
- *
- * @property int $id
- * @property int $priority_id
- * @property int $unit_id
- * @property int $owner_id
- * @property int $category_id
- * @property string $title
- * @property string $description
- * @property int $ticket_statuses_id
- * @property null|int $responsible_id
- * @property null|Carbon $created_at
- * @property null|Carbon $updated_at
- * @property null|string $deleted_at
- * @property Priority $priority
- * @property Unit $unit
- * @property null|User $user
- * @property Category $category
- * @property TicketStatus $ticket_status
- * @property Collection|Comment[] $comments
- */
+
 class Ticket extends Model
 {
     use SoftDeletes;
     use LogsActivity;
 
     protected $casts = [
-        'priority_id' => 'int',
-        'unit_id' => 'int',
-        'owner_id' => 'int',
-        'category_id' => 'int',
-        'ticket_statuses_id' => 'int',
-        'responsible_id' => 'int',
         'status_updated_at' => 'datetime',
     ];
 
@@ -85,13 +52,12 @@ class Ticket extends Model
     {
         return LogOptions::defaults()
             ->logOnly([
+                '*',
                 'priority.name',
                 'unit.name',
                 'owner.name',
                 'responsible.name',
                 'category.name',
-                'title',
-                'description',
                 'ticketStatus.name',
                 'comments',
             ])
