@@ -2,6 +2,21 @@
 use App\Settings\GeneralSettings;
 use App\Settings\AccountSettings;
 
+// class DatabaseSettingsRepository extends \Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository {
+//     public function getPropertiesInGroup(string $group): array
+//     {
+//         if (in_array(
+//                 app(\Symfony\Component\Console\Input\ArgvInput::class)->getFirstArgument(), 
+//                 ['migrate', 'package:discover', 'filament:upgrade', 'key:generate']
+//             )
+//         ) {
+//             return [];
+//         }
+
+//         return parent::getPropertiesInGroup($group);
+//     }
+// }
+
 return [
 
     /*
@@ -38,28 +53,11 @@ return [
      */
     'repositories' => [
         'database' => [
-            'type' => get_class(new class([
-                'model' => null,
-                'table' => null,
-                'connection' => null,
-            ]) extends \Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository {
-                public function getPropertiesInGroup(string $group): array
-                {
-                    if (in_array(
-                            app(\Symfony\Component\Console\Input\ArgvInput::class)->getFirstArgument(), 
-                            ['migrate', 'package:discover', 'filament:upgrade', 'key:generate']
-                        )
-                    ) {
-                        return [];
-                    }
-
-                    return parent::getPropertiesInGroup($group);
-                }
-            }),
-            // 'type' => Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository::class,
-            // 'model' => null,
-            // 'table' => null,
-            // 'connection' => null,
+            // 'type' => DatabaseSettingsRepository::class,
+            'type' => Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository::class,
+            'model' => null,
+            'table' => null,
+            'connection' => null,
         ],
         'redis' => [
             'type' => Spatie\LaravelSettings\SettingsRepositories\RedisSettingsRepository::class,

@@ -12,7 +12,6 @@
         "filament/filament": "^3.2",
         "filament/spatie-laravel-settings-plugin": "^3.2",
         "guzzlehttp/guzzle": "^7.2",
-        "jeffgreco13/filament-breezy": "^2.6",
         "joaopaulolndev/filament-edit-profile": "^1.0",
         "laravel/framework": "^12.10",
         "laravel/sanctum": "^4.0",
