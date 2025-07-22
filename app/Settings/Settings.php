@@ -15,7 +15,7 @@ abstract class Settings extends \Spatie\LaravelSettings\Settings
         } catch (MissingSettings $e) {
             if (!in_array(
                 app(\Symfony\Component\Console\Input\ArgvInput::class)->getFirstArgument(), 
-                ['migrate', 'package:discover']
+                ['migrate', 'package:discover', 'filament:upgrade']
             )) {
                 throw $e;
             } else {
