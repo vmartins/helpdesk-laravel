@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     {
         if (env('LIVEWIRE_BASE_PATH')) {
             Livewire::setScriptRoute(function ($handle) {
-                return Route::get(env('LIVEWIRE_BASE_PATH') . '/livewire.js', $handle);
+                return Route::get(env('LIVEWIRE_BASE_PATH') . '/vendor/livewire.js', $handle);
             });
 
             Livewire::setUpdateRoute(function ($handle) {
