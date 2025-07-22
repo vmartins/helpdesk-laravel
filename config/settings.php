@@ -45,7 +45,11 @@ return [
             ]) extends \Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository {
                 public function getPropertiesInGroup(string $group): array
                 {
-                    if (app(\Symfony\Component\Console\Input\ArgvInput::class)->getFirstArgument() === "migrate") {
+                    if (in_array(
+                            app(\Symfony\Component\Console\Input\ArgvInput::class)->getFirstArgument(), 
+                            ['migrate', 'package:discover']
+                        )
+                    ) {
                         return [];
                     }
 

@@ -13,7 +13,10 @@ abstract class Settings extends \Spatie\LaravelSettings\Settings
         try {
             return parent::__get($name);
         } catch (MissingSettings $e) {
-            if (app(\Symfony\Component\Console\Input\ArgvInput::class)->getFirstArgument() !== "migrate") {
+            if (!in_array(
+                app(\Symfony\Component\Console\Input\ArgvInput::class)->getFirstArgument(), 
+                ['migrate', 'package:discover']
+            )) {
                 throw $e;
             } else {
                 return '';
