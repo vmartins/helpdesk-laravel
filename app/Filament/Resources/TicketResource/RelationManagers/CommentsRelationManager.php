@@ -112,9 +112,12 @@ class CommentsRelationManager extends RelationManager
                     }),
             ])
             ->actions([
-                Tables\Actions\Action::make('attachment')->action(function ($record) {
-                    return response()->download('storage/' . $record->attachments);
-                })->hidden(fn ($record) => $record->attachments == ''),
+                Tables\Actions\Action::make('attachment')
+                    ->translateLabel()
+                    ->action(function ($record) {
+                        return response()->download('storage/' . $record->attachments);
+                    })
+                    ->hidden(fn ($record) => $record->attachments == ''),
 
                 Tables\Actions\EditAction::make(),
             ])
