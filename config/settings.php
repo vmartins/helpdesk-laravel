@@ -47,7 +47,7 @@ return [
                 {
                     if (in_array(
                             app(\Symfony\Component\Console\Input\ArgvInput::class)->getFirstArgument(), 
-                            ['migrate', 'package:discover', 'filament:upgrade']
+                            ['migrate', 'package:discover', 'filament:upgrade', 'key:generate']
                         )
                     ) {
                         return [];
