@@ -101,20 +101,6 @@ class TicketResource extends Resource
                         ->columnSpan([
                             'sm' => 2,
                         ]),
-
-                    Forms\Components\Placeholder::make('approved_at')
-                        ->translateLabel()
-                        ->hiddenOn('create')
-                        ->content(fn (
-                            ?Ticket $record,
-                        ): string => $record->approved_at ? $record->approved_at->diffForHumans() : '-'),
-
-                    Forms\Components\Placeholder::make('solved_at')
-                        ->translateLabel()
-                        ->hiddenOn('create')
-                        ->content(fn (
-                            ?Ticket $record,
-                        ): string => $record->solved_at ? $record->solved_at->diffForHumans() : '-'),
                 ])->columns([
                     'sm' => 2,
                 ])->columnSpan(2),
@@ -135,6 +121,18 @@ class TicketResource extends Resource
                         ->hiddenOn('create')
                         ->hidden(
                             fn () => !auth()
+                                ->user()
+                                ->hasAnyRole(['Super Admin', 'Admin Unit', 'Staff Unit']),
+                        ),
+
+                    Forms\Components\Placeholder::make('status')
+                        ->label(__('Status'))
+                        ->hiddenOn(['create', 'edit'])
+                        ->content(fn (
+                            ?Ticket $record,
+                        ): string => $record ? $record->ticketStatus->name : '-')
+                        ->hidden(
+                            fn () => auth()
                                 ->user()
                                 ->hasAnyRole(['Super Admin', 'Admin Unit', 'Staff Unit']),
                         ),
@@ -198,7 +196,7 @@ class TicketResource extends Resource
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('category.name')
                     ->searchable()
-                    ->label(__(' Category'))
+                    ->label(__('Category'))
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('ticketStatus.name')
                     ->label(__('Status'))

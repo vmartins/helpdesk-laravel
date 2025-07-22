@@ -3,7 +3,9 @@
 namespace App\Policies;
 
 use App\Models\Comment;
+use App\Models\Ticket;
 use App\Models\User;
+use App\Settings\TicketSettings;
 
 class CommentPolicy
 {
@@ -26,8 +28,12 @@ class CommentPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, ?Ticket $ticket): bool
     {
+        if ($ticket) {
+            return !in_array($ticket->ticketStatus->id, app(TicketSettings::class)->closed_status);
+        }
+
         return true;
     }
 

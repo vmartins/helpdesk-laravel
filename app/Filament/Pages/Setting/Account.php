@@ -22,9 +22,14 @@ class Account extends SettingsPage
         return __('Settings');
     }
 
-    public function getTitle(): string
+    public static function getNavigationLabel(): string
     {
         return __('Account');
+    }
+
+    public function getTitle(): string
+    {
+        return self::getNavigationLabel();
     }
 
     public static function canAccess(): bool

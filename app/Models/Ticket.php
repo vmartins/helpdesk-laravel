@@ -26,8 +26,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property null|int $responsible_id
  * @property null|Carbon $created_at
  * @property null|Carbon $updated_at
- * @property null|Carbon $approved_at
- * @property null|Carbon $solved_at
  * @property null|string $deleted_at
  * @property Priority $priority
  * @property Unit $unit
@@ -48,8 +46,7 @@ class Ticket extends Model
         'category_id' => 'int',
         'ticket_statuses_id' => 'int',
         'responsible_id' => 'int',
-        'approved_at' => 'datetime',
-        'solved_at' => 'datetime',
+        'status_updated_at' => 'datetime',
     ];
 
     protected $fillable = [
@@ -60,10 +57,23 @@ class Ticket extends Model
         'title',
         'description',
         'ticket_statuses_id',
+        'status_updated_at',
         'responsible_id',
-        'approved_at',
-        'solved_at',
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (Ticket $ticket) {
+            if (array_key_exists('ticket_statuses_id', $ticket->getDirty())
+                && $ticket->getDirty()['ticket_statuses_id'] != $ticket->getOriginal()['ticket_statuses_id']
+            ) {
+                $ticket->status_updated_at = now();
+            }
+        });
+    }
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -77,8 +87,6 @@ class Ticket extends Model
                 'title',
                 'description',
                 'ticketStatus.name',
-                'approved_at',
-                'solved_at',
                 'comments',
             ])
             ->logOnlyDirty()

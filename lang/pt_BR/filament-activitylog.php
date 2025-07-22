@@ -5,8 +5,6 @@ return [
         'ticket' => [
             'title' => 'Título',
             'description' => 'Descrição',
-            'approved_at' => 'Aprovado em',
-            'solved_at' => 'Resolvido em',
             'ticketStatus' => [
                 'name' => __('Status'),
             ],

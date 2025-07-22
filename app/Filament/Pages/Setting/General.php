@@ -22,9 +22,14 @@ class General extends SettingsPage
         return __('Settings');
     }
 
-    public function getTitle(): string
+    public static function getNavigationLabel(): string
     {
         return __('General');
+    }
+
+    public function getTitle(): string
+    {
+        return self::getNavigationLabel();
     }
 
     public static function canAccess(): bool

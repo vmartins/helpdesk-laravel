@@ -54,6 +54,11 @@ class TicketPolicy
      */
     public function update(User $user, Ticket $ticket): bool
     {
+        // ticket closed
+        if (in_array($ticket->ticketStatus->id, app(TicketSettings::class)->closed_status)) {
+            return false;
+        }
+
         // The admin unit can update tickets that are assigned to their specific unit.
         if ($user->hasRole('Admin Unit')) {
             return $user->id == $ticket->owner_id || $ticket->unit_id == $user->unit_id;
@@ -73,11 +78,7 @@ class TicketPolicy
      */
     public function delete(User $user, Ticket $ticket): bool
     {
-        if ($ticket->ticket_statuses_id != TicketStatus::OPEN) {
-            return false;
-        }
-
-        return $user->id == $ticket->owner_id;
+        return false;
     }
 
     /**

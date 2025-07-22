@@ -5,6 +5,7 @@ namespace App\Filament\Resources\TicketResource\RelationManagers;
 use App\Filament\Resources\TicketResource;
 use App\Models\Comment;
 use App\Models\User;
+use App\Settings\TicketSettings;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Notifications\Actions\Action;
@@ -17,6 +18,7 @@ use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component as Livewire;
 
 class CommentsRelationManager extends RelationManager
@@ -31,6 +33,11 @@ class CommentsRelationManager extends RelationManager
     public function isReadOnly(): bool
     {
         return false;
+    }
+
+    protected function canCreate(): bool
+    {
+        return Gate::allows('create', [$this->getTable()->getModel(), $this->ownerRecord]);
     }
 
     public function form(Form $form): Form
