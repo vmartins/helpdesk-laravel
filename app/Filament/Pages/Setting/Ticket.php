@@ -49,14 +49,14 @@ class Ticket extends SettingsPage
                             ->label(__('Default Priority'))
                             ->options(Priority::all()->pluck('name', 'id'))
                             ->required(),
-                    ]),
 
-                    Forms\Components\Select::make('closed_status')
-                        ->label(__('Closed Status'))
-                        ->multiple()
-                        ->helperText(__('Statuses indicating that the ticket is closed and can no longer be edited'))
-                        ->options(TicketStatus::all()->pluck('name', 'id'))
-                        ->required(),
+                        Forms\Components\Select::make('closed_status')
+                            ->label(__('Closed Status'))
+                            ->multiple()
+                            ->helperText(__('Statuses indicating that the ticket is closed and can no longer be edited'))
+                            ->options(TicketStatus::all()->pluck('name', 'id'))
+                            ->required(),
+                    ]),
             ]);
     }
 }
