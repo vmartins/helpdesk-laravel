@@ -42,7 +42,8 @@ class RolesRelationManager extends RelationManager
             ->filters([
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\AttachAction::make()
+                    ->preloadRecordSelect(),
             ])
             ->actions([
                 Tables\Actions\DetachAction::make(),
