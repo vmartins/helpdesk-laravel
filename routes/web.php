@@ -16,7 +16,7 @@ use Laravel\Socialite\Facades\Socialite;
 */
 
 Route::get('/', function () {
-    return view('landing');
+    return redirect()->route('filament.admin.pages.dashboard');
 });
 
 
