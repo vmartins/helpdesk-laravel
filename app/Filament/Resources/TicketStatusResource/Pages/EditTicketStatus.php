@@ -9,6 +9,11 @@ use Filament\Resources\Pages\EditRecord;
 class EditTicketStatus extends EditRecord
 {
     protected static string $resource = TicketStatusResource::class;
+    
+    protected function getRedirectUrl(): ?string
+    {
+        return $this->getResource()::getUrl('view', ['record' => $this->record]);
+    }
 
     protected function getHeaderActions(): array
     {
