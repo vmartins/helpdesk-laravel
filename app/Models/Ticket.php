@@ -68,7 +68,13 @@ class Ticket extends Model
     {
         static::saving(function (Ticket $ticket) {
             if (array_key_exists('ticket_statuses_id', $ticket->getDirty())
-                && $ticket->getDirty()['ticket_statuses_id'] != $ticket->getOriginal()['ticket_statuses_id']
+                && (
+                    (
+                        array_key_exists('ticket_statuses_id', $ticket->getOriginal())
+                        && $ticket->getDirty()['ticket_statuses_id'] != $ticket->getOriginal()['ticket_statuses_id']
+                    )
+                    || !array_key_exists('ticket_statuses_id', $ticket->getOriginal())
+                )
             ) {
                 $ticket->status_updated_at = now();
             }
