@@ -115,7 +115,7 @@ class AdminPanelProvider extends PanelProvider
         $accountSettings = app(AccountSettings::class);
 
         if ($generalSettings->site_logo_image) {
-            $panel->brandLogo(Storage::url($generalSettings->site_logo_image));
+            $panel->brandLogo(Storage::disk('public')->url($generalSettings->site_logo_image));
         }
 
         if ($generalSettings->site_logo_height) {
@@ -123,7 +123,7 @@ class AdminPanelProvider extends PanelProvider
         }
 
         if ($generalSettings->site_favicon_image) {
-            $panel->favicon(Storage::url($generalSettings->site_favicon_image));
+            $panel->favicon(Storage::disk('public')->url($generalSettings->site_favicon_image));
         }
 
         if ($accountSettings->user_registration) {
