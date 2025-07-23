@@ -9,8 +9,7 @@ return [
      * put them (manually) here.
      */
     'settings' => [
-        GeneralSettings::class,
-        AccountSettings::class,
+        
     ],
 
     /*

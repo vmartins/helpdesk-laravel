@@ -21,6 +21,13 @@ class ConfigServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->configGeneral();
+        $this->configAccount();
+        $this->configMail();
+    }
+
+    protected function configGeneral()
+    {
         $generalSettings = app(\App\Settings\GeneralSettings::class);
 
         if ($generalSettings->site_title) {
@@ -38,7 +45,10 @@ class ConfigServiceProvider extends ServiceProvider
         if ($generalSettings->site_locale) {
             config(['app.locale' => $generalSettings->site_locale]);
         }
+    }
 
+    protected function configAccount()
+    {
         $accountSettings = app(\App\Settings\AccountSettings::class);
 
         if ($accountSettings->auth_google_enabled) {
@@ -69,5 +79,42 @@ class ConfigServiceProvider extends ServiceProvider
                 'userinfo_uri'  => $accountSettings->auth_laravelpassport_userinfo_uri ?? 'api/user',
             ]]);
         }
+    }
+
+    protected function configMail()
+    {
+        $mailSettings = app(\App\Settings\MailSettings::class);
+
+        if ($mailSettings->from_address) {
+            config(['mail.from.address' => $mailSettings->from_address]);
+        }
+
+        if ($mailSettings->from_name) {
+            config(['mail.from.name' => $mailSettings->from_name]);
+        }
+
+        if ($mailSettings->mailer) {
+            config(['mail.default' => $mailSettings->mailer]);
+
+            if ($mailSettings->mailer == 'smtp') {
+                config(['mail.mailers.smtp' => [
+                    'transport' => 'smtp',
+                    'scheme' => $mailSettings->smtp_scheme,
+                    'host' => $mailSettings->smtp_host,
+                    'port' => $mailSettings->smtp_port,
+                    'username' => $mailSettings->smtp_username,
+                    'password' => $mailSettings->smtp_password,
+                    'local_domain' => $mailSettings->smtp_localdomain,
+                ]]);
+            }
+
+            if ($mailSettings->mailer == 'smtp') {
+                config(['mail.sendmail' => [
+                    'transport' => 'sendmail',
+                    'path' => $mailSettings->sendmail_path ?? env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+                ]]);
+            }
+        }
+
     }
 }
