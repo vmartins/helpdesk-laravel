@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
-            $switch->locales(['en', 'id', 'pt_BR']);
+            $switch->locales(['en', 'pt_BR']);
         });
     }
 }
