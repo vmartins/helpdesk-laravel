@@ -69,8 +69,14 @@ class Ticket extends Model
     public function getSubscribers(): Collection
     {
         $subscribers = new Collection([]);
-        $subscribers[$this->owner->id] = $this->owner;
-        $subscribers[$this->responsible->id] = $this->responsible;
+
+        if ($this->owner) {
+            $subscribers[$this->owner->id] = $this->owner;
+        }
+
+        if ($this->responsible) {
+            $subscribers[$this->responsible->id] = $this->responsible;
+        }
 
         $this->comments->each(function($comment) use (&$subscribers) {
             $subscribers->put($comment->user->id, $comment->user);
