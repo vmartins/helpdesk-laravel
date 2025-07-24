@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
@@ -65,6 +66,19 @@ class Ticket extends Model
             ->dontSubmitEmptyLogs();
     }
 
+    public function getSubscribers(): Collection
+    {
+        $subscribers = new Collection([]);
+        $subscribers[$this->owner->id] = $this->owner;
+        $subscribers[$this->responsible->id] = $this->responsible;
+
+        $this->comments->each(function($comment) use (&$subscribers) {
+            $subscribers->put($comment->user->id, $comment->user);
+        });
+
+        return $subscribers;
+    }
+    
     /**
      * Get the priority that owns the Ticket.
      *

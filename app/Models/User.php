@@ -9,12 +9,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use DutchCodingCompany\FilamentSocialite\Models\SocialiteUser;
 use Althinect\FilamentSpatieRolesPermissions\Concerns\HasSuperAdmin;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class User extends Authenticatable implements FilamentUser, MustVerifyEmail
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasLocalePreference
 {
     use SoftDeletes;
     use HasRoles;
@@ -59,6 +60,14 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
             ])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
+    }
+
+    /**
+     * Get the user's preferred locale.
+     */
+    public function preferredLocale(): string
+    {
+        return app(\App\Settings\GeneralSettings::class)->site_locale;
     }
 
     /**
