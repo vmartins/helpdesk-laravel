@@ -10,6 +10,7 @@ use App\Models\Ticket;
 use App\Models\TicketStatus;
 use App\Models\Unit;
 use App\Models\User;
+use App\Settings\GeneralSettings;
 use App\Settings\TicketSettings;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -190,7 +191,7 @@ class TicketResource extends Resource
                     })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->dateTime(app(GeneralSettings::class)->datetime_format)
                     ->translateLabel()
                     ->sortable()
                     ->toggleable(),

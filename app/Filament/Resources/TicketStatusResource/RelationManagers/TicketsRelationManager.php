@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TicketStatusResource\RelationManagers;
 
 use App\Models\Ticket;
+use App\Settings\GeneralSettings;
 use Filament\Tables\Table;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -21,7 +22,7 @@ class TicketsRelationManager extends RelationManager
                     ->translateLabel()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->dateTime(app(GeneralSettings::class)->datetime_format)
                     ->translateLabel()
                     ->sortable()
                     ->toggleable(),

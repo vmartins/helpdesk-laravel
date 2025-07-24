@@ -7,6 +7,7 @@ use App\Filament\Resources\UserResource\RelationManagers\RolesRelationManager;
 use App\Filament\Resources\UserResource\RelationManagers\TicketsRelationManager;
 use App\Models\Unit;
 use App\Models\User;
+use App\Settings\GeneralSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -51,7 +52,9 @@ class UserResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\DateTimePicker::make('email_verified_at')
-                    ->translateLabel(),
+                    ->translateLabel()
+                    ->native(false)
+                    ->displayFormat(app(GeneralSettings::class)->datetime_format),
                 Forms\Components\TextInput::make('password')
                     ->translateLabel()
                     ->password()

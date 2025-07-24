@@ -5,6 +5,7 @@ namespace App\Filament\Resources\TicketResource\RelationManagers;
 use App\Filament\Resources\TicketResource;
 use App\Models\Comment;
 use App\Models\User;
+use App\Settings\GeneralSettings;
 use App\Settings\TicketSettings;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -71,7 +72,7 @@ class CommentsRelationManager extends RelationManager
                             ->grow(false),
                         TextColumn::make('created_at')
                             ->translateLabel()
-                            ->dateTime()
+                            ->dateTime(app(GeneralSettings::class)->datetime_format)
                             ->color('secondary'),
                     ]),
                     TextColumn::make('comment')
