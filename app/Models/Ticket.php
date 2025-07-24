@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Settings\AccountSettings;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -81,6 +82,13 @@ class Ticket extends Model
         $this->comments->each(function($comment) use (&$subscribers) {
             $subscribers->put($comment->user->id, $comment->user);
         });
+
+        $accountSettings = app(AccountSettings::class);
+        if ($accountSettings->user_email_verification) {
+            $subscribers = $subscribers->filter(function ($subscriber) {
+                return $subscriber->email_verified_at;
+            });
+        }
 
         return $subscribers;
     }
