@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\TicketResource;
 use App\Settings\AccountSettings;
 use App\Settings\GeneralSettings;
 use Filament\Http\Middleware\Authenticate;
@@ -14,6 +15,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
+use Filament\Navigation\NavigationItem;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -35,6 +37,9 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $generalSettings = app(GeneralSettings::class);
+        $accountSettings = app(AccountSettings::class);
+
         $panel
             ->default()
             ->id('admin')
@@ -56,9 +61,9 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentEditProfilePlugin::make()
                     ->slug('my-profile')
-                    ->setTitle(__('My Profile'))
-                    ->setNavigationLabel(__('My Profile'))
-                    ->setNavigationGroup(__('Group Profile'))
+                    ->setTitle(__('My Profile', locale: $generalSettings->site_locale))
+                    ->setNavigationLabel(__('My Profile', locale: $generalSettings->site_locale))
+                    ->setNavigationGroup(__('Group Profile', locale: $generalSettings->site_locale))
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
                     ->shouldRegisterNavigation(false)
@@ -85,6 +90,17 @@ class AdminPanelProvider extends PanelProvider
                     ->navigationItem(false),
                     
             ])
+            ->navigationItems([
+                NavigationItem::make('my_tickets')
+                    ->label(__('My Tickets', locale: $generalSettings->site_locale))
+                    ->icon('heroicon-o-ticket')
+                    ->url(fn (): string => TicketResource::getUrl('index', ['tableFilters[only_my_tickets][isActive]' => true]))
+                    ->sort(4)
+                    ->isActiveWhen(fn () => 
+                        request()->routeIs('filament.admin.resources.tickets.index')
+                        && collect(request()->query())->dot()->get('tableFilters.only_my_tickets.isActive')
+                    ),
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -109,10 +125,6 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
-
-
-        $generalSettings = app(GeneralSettings::class);
-        $accountSettings = app(AccountSettings::class);
 
         if ($generalSettings->site_logo_image) {
             $panel->brandLogo(Storage::disk('public')->url($generalSettings->site_logo_image));

@@ -34,6 +34,14 @@ class TicketResource extends Resource
         return __('Ticket');
     }
 
+    public static function getNavigationItems(): array
+    {
+        $navigationsItems = parent::getNavigationItems();
+        $navigationsItems[0]->isActiveWhen(function() {
+            return !collect(request()->query())->dot()->get('tableFilters.only_my_tickets.isActive');
+        });
+        return $navigationsItems;
+    }
     public static function form(Form $form): Form
     {
         return $form
