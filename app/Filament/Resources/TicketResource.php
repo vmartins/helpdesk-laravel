@@ -209,6 +209,23 @@ class TicketResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+
+                Tables\Filters\Filter::make('only_my_tickets')
+                    ->translateLabel()
+                    ->toggle()
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->where('owner_id', auth()->user()->id);
+                    }),
+
+                Tables\Filters\SelectFilter::make('owner')
+                    ->translateLabel()
+                    ->options([
+                        'draft' => 'Draft',
+                        'reviewing' => 'Reviewing',
+                        'published' => 'Published',
+                    ])
+                    ->visible(!!auth()->user()->roles)
+                    ->relationship('owner', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
