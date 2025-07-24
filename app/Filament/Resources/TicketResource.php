@@ -219,12 +219,7 @@ class TicketResource extends Resource
 
                 Tables\Filters\SelectFilter::make('owner')
                     ->translateLabel()
-                    ->options([
-                        'draft' => 'Draft',
-                        'reviewing' => 'Reviewing',
-                        'published' => 'Published',
-                    ])
-                    ->visible(!!auth()->user()->roles)
+                    ->visible(auth()->user()->roles->isNotEmpty())
                     ->relationship('owner', 'name'),
             ])
             ->actions([
