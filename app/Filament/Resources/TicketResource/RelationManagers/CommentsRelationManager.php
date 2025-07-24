@@ -48,8 +48,7 @@ class CommentsRelationManager extends RelationManager
                 Section::make()->schema([
                     Forms\Components\RichEditor::make('comment')
                         ->translateLabel()
-                        ->required()
-                        ->maxLength(255),
+                        ->required(),
                     Forms\Components\FileUpload::make('attachments')
                         ->translateLabel()
                         ->directory('comment-attachments/' . date('m-y'))
