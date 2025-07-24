@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\TicketResource\Pages;
 
 use App\Filament\Resources\TicketResource;
+use App\Support\Activitylog\ActivityLogTimelineSimpleAction;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Support\HtmlString;
 
 class ViewTicket extends ViewRecord
 {
@@ -13,7 +15,7 @@ class ViewTicket extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            ActivityLog\ActivityLogTimelineSimpleAction::make('timeline')
+            ActivityLogTimelineSimpleAction::make('timeline')
                 ->label(__('Histórico'))
                 ->withRelations(['comments'])
                 ->modifyProperties(function(array $properties) {
@@ -32,12 +34,20 @@ class ViewTicket extends ViewRecord
                         'responsible.name' => __('Responsible'),
                     ];
 
+                    $htmlProperties = [
+                        'comment',
+                    ];
+
                     foreach (array_keys($properties) as $type) {
                         foreach ($mappedProperties as $key => $value) {
                             if (array_key_exists($type, $properties)
                                 && array_key_exists($key, $properties[$type])
                             ) {
-                                $newProperties[$type][$value] = $properties[$type][$key];
+                                if (array_key_exists($key, array_flip($htmlProperties))) {
+                                    $newProperties[$type][$value] = strip_tags($properties[$type][$key]);
+                                } else {
+                                    $newProperties[$type][$value] = $properties[$type][$key];
+                                }
                             }
                         }
                     }

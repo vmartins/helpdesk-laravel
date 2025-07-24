@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\TicketResource\Pages\ActivityLog;
+namespace App\Support\Activitylog;
 
 use Closure;
 use Filament\Actions\Action;
