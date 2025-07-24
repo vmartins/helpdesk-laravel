@@ -195,6 +195,10 @@ class TicketResource extends Resource
                     ->translateLabel()
                     ->sortable()
                     ->toggleable(),
+                Tables\Columns\TextColumn::make('owner.name')
+                    ->searchable()
+                    ->label(__('Owner'))
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('category.name')
                     ->searchable()
                     ->label(__('Category'))
