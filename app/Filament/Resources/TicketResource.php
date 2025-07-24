@@ -221,6 +221,10 @@ class TicketResource extends Resource
                     ->translateLabel()
                     ->visible(auth()->user()->roles->isNotEmpty())
                     ->relationship('owner', 'name'),
+
+                Tables\Filters\SelectFilter::make('status')
+                    ->translateLabel()
+                    ->relationship('ticketStatus', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
