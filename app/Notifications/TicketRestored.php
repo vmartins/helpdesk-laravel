@@ -88,13 +88,18 @@ class TicketRestored extends Notification implements ShouldQueue, ShouldBeDeboun
     {
         $siteTitle = app(GeneralSettings::class)->site_title;
         $subjectPrefix = "[{$siteTitle}] ";
+        $activityRestored = $this->ticket->activities()->where('event', 'restored')->get()->last();
+        $restoredBy = '-';
+        if ($activityRestored) {
+            $restoredBy = $activityRestored->causer->name;
+        }
 
         return (new MailMessage)
             ->subject($subjectPrefix . __('Ticket #:ticket restored', [
                 'ticket' => $this->ticket->id, 
             ]))
             ->greeting(__("Ticket") . ": {$this->ticket->title}")
-            ->line(__("Restored by") . ": {$this->ticket->activities()->where('event', 'restored')->get()->last()->causer->name}");
+            ->line(__("Restored by") . ": {$restoredBy}");
     }
 
     public function toDatabase(object $notifiable): array

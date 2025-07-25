@@ -88,13 +88,18 @@ class TicketDeleted extends Notification implements ShouldQueue, ShouldBeDebounc
     {
         $siteTitle = app(GeneralSettings::class)->site_title;
         $subjectPrefix = "[{$siteTitle}] ";
+        $activityDeleted = $this->ticket->activities()->where('event', 'deleted')->get()->last();
+        $deletedBy = '-';
+        if ($activityDeleted) {
+            $deletedBy = $activityDeleted->causer->name;
+        }
 
         return (new MailMessage)
             ->subject($subjectPrefix . __('Ticket #:ticket deleted', [
                 'ticket' => $this->ticket->id, 
             ]))
             ->greeting(__("Ticket") . ": {$this->ticket->title}")
-            ->line(__("Deleted by") . ": {$this->ticket->activities()->where('event', 'deleted')->get()->last()->causer->name}");
+            ->line(__("Deleted by") . ": {$deletedBy}");
     }
 
     public function toDatabase(object $notifiable): array
