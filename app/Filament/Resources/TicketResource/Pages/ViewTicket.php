@@ -35,6 +35,7 @@ class ViewTicket extends ViewRecord
                     ];
 
                     $htmlProperties = [
+                        'description',
                         'comment',
                     ];
 
