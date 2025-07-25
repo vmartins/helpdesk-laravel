@@ -112,7 +112,7 @@ class TicketStatusUpdated extends Notification implements ShouldQueue, ShouldBeD
                     ->translateLabel()
                     ->button()
                     ->url(route('filament.admin.resources.tickets.view', $this->ticket)),
-                ])
+            ])
             ->getDatabaseMessage();
     }
 
