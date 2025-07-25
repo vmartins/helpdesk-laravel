@@ -242,10 +242,25 @@ class TicketResource extends Resource
                     ->relationship('ticketStatus', 'name'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('')
+                    ->size('lg')
+                    ->tooltip(__('filament-actions::view.single.label')),
+
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->size('lg')
+                    ->tooltip(__('filament-actions::edit.single.label')),
+
+                Tables\Actions\DeleteAction::make()
+                    ->label('')
+                    ->size('lg')
+                    ->tooltip(__('filament-actions::delete.single.label')),
+
+                Tables\Actions\RestoreAction::make()
+                    ->label('')
+                    ->size('lg')
+                    ->tooltip(__('filament-actions::restore.single.label')),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
