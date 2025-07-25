@@ -29,7 +29,7 @@ class TicketStatusesChart extends ApexChartWidget
      */
     protected function getOptions(): array
     {
-        $ticketStatuses = TicketStatus::select('id', 'name')->withCount(['tickets'])->get();
+        $ticketStatuses = TicketStatus::select('id', 'name', 'color')->withCount(['tickets'])->get();
         return [
             'chart' => [
                 'type' => 'pie',
@@ -37,6 +37,7 @@ class TicketStatusesChart extends ApexChartWidget
             ],
             'series' => $ticketStatuses->pluck('tickets_count')->toArray(),
             'labels' => $ticketStatuses->pluck('name')->toArray(),
+            'colors' => $ticketStatuses->pluck('color')->filter()->pad($ticketStatuses->count(), '#c4c3c3')->toArray(),
             'legend' => [
                 'labels' => [
                     'colors' => '#9ca3af',

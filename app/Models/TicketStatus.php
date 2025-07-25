@@ -17,6 +17,7 @@ class TicketStatus extends Model
 
     protected $fillable = [
         'name',
+        'color',
     ];
 
     public function getActivitylogOptions(): LogOptions

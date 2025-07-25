@@ -39,6 +39,9 @@ class TicketStatusResource extends Resource
                     ->translateLabel()
                     ->required()
                     ->maxLength(255),
+
+                Forms\Components\ColorPicker::make('color')
+                    ->translateLabel(),
             ]);
     }
 
@@ -52,6 +55,9 @@ class TicketStatusResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->translateLabel()
                     ->searchable(),
+
+                Tables\Columns\ColorColumn::make('color')
+                    ->translateLabel(),
 
                 Tables\Columns\TextColumn::make('tickets_count')
                     ->counts('tickets')

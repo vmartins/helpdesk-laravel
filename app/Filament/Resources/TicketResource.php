@@ -12,7 +12,9 @@ use App\Models\Unit;
 use App\Models\User;
 use App\Settings\GeneralSettings;
 use App\Settings\TicketSettings;
+use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Support\Colors\Color;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -214,7 +216,11 @@ class TicketResource extends Resource
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('ticketStatus.name')
                     ->label(__('Status'))
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->color(function(Ticket $ticket) {
+                        return $ticket->ticketStatus->color ? Color::hex($ticket->ticketStatus->color) : 'gray';
+                    }),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
