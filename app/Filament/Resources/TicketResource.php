@@ -38,7 +38,8 @@ class TicketResource extends Resource
     {
         $navigationsItems = parent::getNavigationItems();
         $navigationsItems[0]->isActiveWhen(function() {
-            return !collect(request()->query())->dot()->get('tableFilters.only_my_tickets.isActive');
+            return request()->routeIs(static::getRouteBaseName() . '.*')
+                && !collect(request()->query())->dot()->get('tableFilters.only_my_tickets.isActive');
         });
         return $navigationsItems;
     }
