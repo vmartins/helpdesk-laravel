@@ -12,7 +12,7 @@ class TicketSeeder extends Seeder
      */
     public function run(): void
     {
-        Ticket::create([
+        Ticket::updateOrCreate([
             'priority_id' => 1,
             'unit_id'   => 1,
             'owner_id'  => 1,

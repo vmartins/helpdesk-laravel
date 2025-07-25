@@ -12,8 +12,8 @@ class PrioritySeeder extends Seeder
      */
     public function run(): void
     {
-        Priority::create(['name' => 'Normal', 'sla' => 2880]);
-        Priority::create(['name' => 'Urgent', 'sla' => 1440]);
-        Priority::create(['name' => 'Critical', 'sla' => 480]);
+        Priority::updateOrCreate(['name' => 'Normal', 'sla' => 2880]);
+        Priority::updateOrCreate(['name' => 'Urgent', 'sla' => 1440]);
+        Priority::updateOrCreate(['name' => 'Critical', 'sla' => 480]);
     }
 }

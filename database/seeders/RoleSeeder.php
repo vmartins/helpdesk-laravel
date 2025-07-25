@@ -12,28 +12,33 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create([
+        Role::updateOrCreate([
             'name' => 'Super Admin',
             'guard_name' => 'web',
         ]);
 
-        Role::create([
+        Role::updateOrCreate([
             'name' => 'Admin Unit',
             'guard_name' => 'web',
         ]);
 
-        Role::create([
+        Role::updateOrCreate([
             'name' => 'Staff Unit',
             'guard_name' => 'web',
         ]);
 
-        Role::create([
+        Role::updateOrCreate([
             'name' => 'Global Viewer',
             'guard_name' => 'web',
         ]);
 
-        Role::create([
+        Role::updateOrCreate([
             'name' => 'Unit Viewer',
+            'guard_name' => 'web',
+        ]);
+
+        Role::updateOrCreate([
+            'name' => 'Global Staff',
             'guard_name' => 'web',
         ]);
     }

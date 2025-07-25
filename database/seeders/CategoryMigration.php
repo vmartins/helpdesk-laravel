@@ -12,23 +12,24 @@ class CategoryMigration extends Seeder
      */
     public function run(): void
     {
-        Category::insert([
-            [
-                'unit_id' => 1,
-                'name' => ' One at Sales Department',
-            ],
-            [
-                'unit_id' => 1,
-                'name' => ' Two at Sales Department',
-            ],
-            [
-                'unit_id' => 2,
-                'name' => ' One at Technical Support',
-            ],
-            [
-                'unit_id' => 3,
-                'name' => ' One at Billing Support',
-            ],
+        Category::updateOrCreate([
+            'unit_id' => 1,
+            'name' => ' One at Sales Department',
+        ]);
+
+        Category::updateOrCreate([
+            'unit_id' => 1,
+            'name' => ' Two at Sales Department',
+        ]);
+        
+        Category::updateOrCreate([
+            'unit_id' => 2,
+            'name' => ' One at Technical Support',
+        ]);
+
+        Category::updateOrCreate([
+            'unit_id' => 3,
+            'name' => ' One at Billing Support',
         ]);
     }
 }

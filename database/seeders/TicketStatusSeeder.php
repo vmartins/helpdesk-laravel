@@ -12,13 +12,11 @@ class TicketStatusSeeder extends Seeder
      */
     public function run(): void
     {
-        TicketStatus::insert([
-            ['name' => 'New'],
-            ['name' => 'Open'],
-            ['name' => 'In Progress'],
-            ['name' => 'Pending'],
-            ['name' => 'Resolved'],
-            ['name' => 'Closed'],
-        ]);
+        TicketStatus::updateOrCreate(['name' => 'New']);
+        TicketStatus::updateOrCreate(['name' => 'Open']);
+        TicketStatus::updateOrCreate(['name' => 'In Progress']);
+        TicketStatus::updateOrCreate(['name' => 'Pending']);
+        TicketStatus::updateOrCreate(['name' => 'Resolved']);
+        TicketStatus::updateOrCreate(['name' => 'Closed']);
     }
 }
