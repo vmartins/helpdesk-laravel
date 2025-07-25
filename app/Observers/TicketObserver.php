@@ -2,10 +2,14 @@
 
 namespace App\Observers;
 
+use App\Models\User;
 use App\Models\Ticket;
+use App\Notifications\TicketCreated;
 use App\Notifications\TicketDeleted;
 use App\Notifications\TicketRestored;
 use App\Notifications\TicketStatusUpdated;
+use App\Settings\AccountSettings;
+use Illuminate\Support\Collection;
 
 class TicketObserver
 {
@@ -14,7 +18,35 @@ class TicketObserver
      */
     public function created(Ticket $ticket): void
     {
-        
+        $staffUsers = new Collection([]);
+
+        $accountSettings = app(AccountSettings::class);
+
+        $usersQuery = User::whereNotNull('email')
+            ->when($accountSettings->user_email_verification, function($query) {
+                $query->whereNotNull('email_verified_at');
+            });
+
+        $usersQuery->role('Staff Unit')
+            ->where('unit_id', $ticket->unit_id)
+            ->get()
+            ->each(function($user) use (&$staffUsers) {
+                $staffUsers->put($user->id, $user);
+            });
+
+        $usersQuery->role('Global Staff')
+            ->get()
+            ->each(function($user) use (&$staffUsers) {
+                $staffUsers->put($user->id, $user);
+            });
+
+        $authUser = auth()->user();
+
+        if ($staffUsers->has($authUser->id)) {
+            $staffUsers->pull($authUser->id);
+        }
+
+        $staffUsers->each(fn ($user) => $user->notify(new TicketCreated($ticket)));
     }
 
     /**
