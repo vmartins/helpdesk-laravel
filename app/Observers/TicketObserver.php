@@ -3,6 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Ticket;
+use App\Notifications\TicketDeleted;
+use App\Notifications\TicketRestored;
 use App\Notifications\TicketStatusUpdated;
 
 class TicketObserver
@@ -45,7 +47,10 @@ class TicketObserver
      */
     public function deleted(Ticket $ticket): void
     {
-        //
+        $authUser = auth()->user();
+        if ($ticket->owner->id != $authUser->id) {
+            $ticket->owner->notify(new TicketDeleted($ticket));
+        }
     }
 
     /**
@@ -53,7 +58,10 @@ class TicketObserver
      */
     public function restored(Ticket $ticket): void
     {
-        //
+        $authUser = auth()->user();
+        if ($ticket->owner->id != $authUser->id) {
+            $ticket->owner->notify(new TicketRestored($ticket));
+        }
     }
 
     /**

@@ -16,7 +16,7 @@ use Illuminate\Notifications\Notification;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 
-class TicketStatusUpdated extends Notification implements ShouldQueue, ShouldBeDebounce
+class TicketRestored extends Notification implements ShouldQueue, ShouldBeDebounce
 {
     use Queueable;
     use Debounce;
@@ -90,29 +90,20 @@ class TicketStatusUpdated extends Notification implements ShouldQueue, ShouldBeD
         $subjectPrefix = "[{$siteTitle}] ";
 
         return (new MailMessage)
-            ->subject($subjectPrefix . __('Ticket #:ticket changed to :status', [
+            ->subject($subjectPrefix . __('Ticket #:ticket restored', [
                 'ticket' => $this->ticket->id, 
-                'status' => __($this->ticket->ticketStatus->name),
             ]))
             ->greeting(__("Ticket") . ": {$this->ticket->title}")
-            ->line(__("Status") . ": {$this->ticket->ticketStatus->name}")
-            ->action(__('View'), route('filament.admin.resources.tickets.view', $this->ticket));
+            ->line(__("Restored by") . ": {$this->ticket->activities()->where('event', 'restored')->get()->last()->causer->name}");
     }
 
     public function toDatabase(object $notifiable): array
     {
         return FilamentNotification::make()
-            ->title(__('Ticket #:ticket changed to :status', [
+            ->title(__('Ticket #:ticket restored', [
                 'ticket' => $this->ticket->id, 
-                'status' => __($this->ticket->ticketStatus->name),
             ]))
             ->body($this->ticket->title)
-            ->actions([
-                Action::make('view')
-                    ->translateLabel()
-                    ->button()
-                    ->url(route('filament.admin.resources.tickets.view', $this->ticket)),
-                ])
             ->getDatabaseMessage();
     }
 
