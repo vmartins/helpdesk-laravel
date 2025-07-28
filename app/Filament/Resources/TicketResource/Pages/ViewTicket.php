@@ -10,7 +10,14 @@ use Illuminate\Support\HtmlString;
 
 class ViewTicket extends ViewRecord
 {
+    protected $listeners = ['refreshTicketFormView' => 'refreshForm'];
+
     protected static string $resource = TicketResource::class;
+
+    public function refreshForm()
+    {
+        $this->fillForm();
+    }
 
     protected function getHeaderActions(): array
     {

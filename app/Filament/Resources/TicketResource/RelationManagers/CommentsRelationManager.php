@@ -4,6 +4,8 @@ namespace App\Filament\Resources\TicketResource\RelationManagers;
 
 use App\Filament\Resources\TicketResource;
 use App\Models\Comment;
+use App\Models\Ticket;
+use App\Models\TicketStatus;
 use App\Models\User;
 use App\Settings\GeneralSettings;
 use App\Settings\TicketSettings;
@@ -24,6 +26,8 @@ use Livewire\Component as Livewire;
 
 class CommentsRelationManager extends RelationManager
 {
+    protected $listeners = ['refreshComments' => '$refresh'];
+
     protected static string $relationship = 'comments';
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
@@ -46,9 +50,22 @@ class CommentsRelationManager extends RelationManager
         return $form
             ->schema([
                 Section::make()->schema([
+                    Forms\Components\Select::make('ticket_statuses_id')
+                        ->label(__('Change Status'))
+                        ->options(TicketStatus::all()->pluck('name', 'id'))
+                        ->searchable()
+                        ->default(fn(Livewire $livewire) => $livewire->ownerRecord->ticket_statuses_id)
+                        ->hiddenOn('edit')
+                        ->hidden(
+                            fn () => !auth()
+                                ->user()
+                                ->hasAnyRole(['Super Admin', 'Admin Unit', 'Staff Unit']),
+                        ),
+
                     Forms\Components\RichEditor::make('comment')
                         ->translateLabel()
                         ->required(),
+
                     Forms\Components\FileUpload::make('attachments')
                         ->translateLabel()
                         ->directory('comment-attachments/' . date('m-y'))
@@ -81,34 +98,27 @@ class CommentsRelationManager extends RelationManager
             ])
             ->filters([])
             ->headerActions([
+                Tables\Actions\Action::make('refresh')
+                    ->translateLabel()
+                    ->outlined()
+                    ->dispatchSelf('refreshComments'),
+
                 Tables\Actions\CreateAction::make()
-                    ->mutateFormDataUsing(function (array $data): array {
+                    ->label(__('Add Comment'))
+                    ->mutateFormDataUsing(function (array $data, Livewire $livewire): array {
                         $data['user_id'] = auth()->id();
+                        
 
                         return $data;
                     })
-                    ->after(function (Livewire $livewire) {
+                    ->before(function (array $data, Livewire $livewire) {
                         $ticket = $livewire->ownerRecord;
-
-                        if (auth()->user()->hasAnyRole(['Admin Unit', 'Staf Unit'])) {
-                            $receiver = $ticket->owner;
-                        } else {
-                            $receiver = User::whereHas(
-                                'roles',
-                                function ($q) {
-                                    $q->where('name', 'Admin Unit')
-                                        ->orWhere('name', 'Staf Unit');
-                                },
-                            )->get();
+                        if (array_key_exists('ticket_statuses_id', $data) && !empty($data['ticket_statuses_id'])) {
+                            $ticket->update(['ticket_statuses_id' => $data['ticket_statuses_id']]);
                         }
-
-                        Notification::make()
-                            ->title(__('There are new comments on your ticket'))
-                            ->actions([
-                                Action::make(__('Show'))
-                                    ->url(TicketResource::getUrl('view', ['record' => $ticket->id])),
-                            ])
-                            ->sendToDatabase($receiver);
+                    })
+                    ->after(function (array $data, Livewire $livewire) {
+                        $livewire->dispatch('refreshTicketFormView');
                     }),
             ])
             ->actions([

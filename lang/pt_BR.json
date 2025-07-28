@@ -1,5 +1,6 @@
 {
     "Account": "Conta",
+    "Add Comment": "Adicionar Comentário",
     "Administration": "Administração",
     "All rights reserved.": "Todos os direitos reservados.",
     "Allow Registration": "Permitir cadastro",
@@ -65,6 +66,7 @@
     "Publicly accessible URL of this site": "URL de acesso público deste site",
     "Reasons": "Os helpdesks fornecem suporte eficiente, centralizam a comunicação, otimizam os fluxos de trabalho, oferecem opções de autoatendimento, monitoram o desempenho e aprimoram a experiência do cliente.",
     "Redirect": "Redirecionamento",
+    "Refresh": "Atualizar",
     "Regards,": "Atenciosamente,",
     "Require users to validate their email to login": "Exigir que os usuários validem seus e-mails para fazer login",
     "Responsible": "Responsável",
