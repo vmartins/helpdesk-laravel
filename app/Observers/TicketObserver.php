@@ -27,14 +27,14 @@ class TicketObserver
                 $query->whereNotNull('email_verified_at');
             });
 
-        $usersQuery->role('Staff Unit')
+        $usersQuery->clone()->role('Staff Unit')
             ->where('unit_id', $ticket->unit_id)
             ->get()
             ->each(function($user) use (&$staffUsers) {
                 $staffUsers->put($user->id, $user);
             });
 
-        $usersQuery->role('Global Staff')
+        $usersQuery->clone()->role('Global Staff')
             ->get()
             ->each(function($user) use (&$staffUsers) {
                 $staffUsers->put($user->id, $user);
