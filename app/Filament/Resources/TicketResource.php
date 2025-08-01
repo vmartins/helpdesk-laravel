@@ -202,9 +202,6 @@ class TicketResource extends Resource
                     ->sortable()
                     ->limit(40)
                     ->grow()
-                    ->prefix(function(Ticket $ticket) {
-                        return "#{$ticket->id}: ";
-                    })
                     ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
                         $state = $column->getState();
 
@@ -215,31 +212,38 @@ class TicketResource extends Resource
                         // Only render the tooltip if the column content exceeds the length limit.
                         return $state;
                     })
+                    ->description(function (Ticket $ticket) {
+                        return view('filament.tables.columns.ticket-description', compact('ticket'));
+                    })
                     ->searchable(),
-
-                Tables\Columns\TextColumn::make('owner.name')
-                    ->searchable()
-                    ->label(__('Owner'))
-                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('category.name')
                     ->searchable()
                     ->label(__('Category'))
                     ->toggleable(),
 
+                Tables\Columns\TextColumn::make('comments_count')
+                    ->label(__('Comments'))
+                    ->counts('comments')
+                    ->alignment(Alignment::Center)
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('owner.name')
+                    ->searchable()
+                    ->label(__('Owner'))
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime(app(GeneralSettings::class)->datetime_format)
                     ->translateLabel()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
-
                 Tables\Filters\Filter::make('only_my_tickets')
                     ->translateLabel()
                     ->toggle()
-                    ->query(function (Builder $query, array $data): Builder {
+                    ->query(function (Builder $query): Builder {
                         return $query->where('owner_id', auth()->user()->id);
                     }),
 
@@ -250,7 +254,19 @@ class TicketResource extends Resource
 
                 Tables\Filters\SelectFilter::make('status')
                     ->translateLabel()
-                    ->relationship('ticketStatus', 'name'),
+                    ->default('unclosed')
+                    ->options(fn (): array => ['unclosed' => __('Unclosed')] + TicketStatus::query()->pluck('name', 'id')->all())
+                    ->query(function (Builder $query, $data) {
+                        if ($data['value']) {
+                            if (is_numeric($data['value'])) {
+                                return $query->where('ticket_statuses_id', $data['value']);
+                            } else if ($data['value'] == 'unclosed') {
+                                return $query->whereNotIn('ticket_statuses_id', app(TicketSettings::class)->closed_status);
+                            }
+                        }
+                    }),
+
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()

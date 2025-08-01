@@ -77,6 +77,11 @@ class General extends SettingsPage
                             ->options(collect(config('filament-language-switch.locales'))->map(fn($item) => $item['name']))
                             ->required(),
 
+                        Forms\Components\TextInput::make('date_format')
+                            ->translateLabel()
+                            ->helperText('https://www.php.net/manual/en/datetime.format.php')
+                            ->required(),
+
                         Forms\Components\TextInput::make('datetime_format')
                             ->translateLabel()
                             ->helperText('https://www.php.net/manual/en/datetime.format.php')

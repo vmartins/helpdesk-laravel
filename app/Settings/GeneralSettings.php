@@ -12,6 +12,7 @@ class GeneralSettings extends Settings
     public string $site_timezone = 'UTC';
     public string $site_locale = 'en';
     public string $datetime_format = 'Y-m-d H:i:s';
+    public string $date_format = 'Y-m-d';
 
     public static function group(): string
     {

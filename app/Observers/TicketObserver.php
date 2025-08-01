@@ -42,7 +42,7 @@ class TicketObserver
 
         $authUser = auth()->user();
 
-        if ($staffUsers->has($authUser->id)) {
+        if ($authUser && $staffUsers->has($authUser->id)) {
             $staffUsers->pull($authUser->id);
         }
 
@@ -66,7 +66,7 @@ class TicketObserver
             $authUser = auth()->user();
             $subscribers = $ticket->getSubscribers();
 
-            if ($subscribers->has($authUser->id)) {
+            if ($authUser && $subscribers->has($authUser->id)) {
                 $subscribers->pull($authUser->id);
             }
 
@@ -80,7 +80,7 @@ class TicketObserver
     public function deleted(Ticket $ticket): void
     {
         $authUser = auth()->user();
-        if ($ticket->owner->id != $authUser->id) {
+        if ($authUser && $ticket->owner->id != $authUser->id) {
             $ticket->owner->notify(new TicketDeleted($ticket));
         }
     }
@@ -91,7 +91,7 @@ class TicketObserver
     public function restored(Ticket $ticket): void
     {
         $authUser = auth()->user();
-        if ($ticket->owner->id != $authUser->id) {
+        if ($authUser && $ticket->owner->id != $authUser->id) {
             $ticket->owner->notify(new TicketRestored($ticket));
         }
     }

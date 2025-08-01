@@ -15,7 +15,7 @@ class CommentObserver
         $authUser = auth()->user();
         $subscribers = $comment->ticket->getSubscribers();
 
-        if ($subscribers->has($authUser->id)) {
+        if ($authUser && $subscribers->has($authUser->id)) {
             $subscribers->pull($authUser->id);
         }
 
