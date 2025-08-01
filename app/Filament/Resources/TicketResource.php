@@ -15,6 +15,7 @@ use App\Settings\TicketSettings;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Alignment;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -187,9 +188,23 @@ class TicketResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('ticketStatus.name')
+                    ->label(__('Status'))
+                    ->sortable()
+                    ->badge()
+                    ->alignment(Alignment::Center)
+                    ->color(function(Ticket $ticket) {
+                        return $ticket->ticketStatus->color ? Color::hex($ticket->ticketStatus->color) : 'gray';
+                    }),
+
                 Tables\Columns\TextColumn::make('title')
                     ->translateLabel()
-                    ->limit(50)
+                    ->sortable()
+                    ->limit(40)
+                    ->grow()
+                    ->prefix(function(Ticket $ticket) {
+                        return "#{$ticket->id}: ";
+                    })
                     ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
                         $state = $column->getState();
 
@@ -201,26 +216,22 @@ class TicketResource extends Resource
                         return $state;
                     })
                     ->searchable(),
+
+                Tables\Columns\TextColumn::make('owner.name')
+                    ->searchable()
+                    ->label(__('Owner'))
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('category.name')
+                    ->searchable()
+                    ->label(__('Category'))
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime(app(GeneralSettings::class)->datetime_format)
                     ->translateLabel()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('owner.name')
-                    ->searchable()
-                    ->label(__('Owner'))
-                    ->toggleable(),
-                Tables\Columns\TextColumn::make('category.name')
-                    ->searchable()
-                    ->label(__('Category'))
-                    ->toggleable(),
-                Tables\Columns\TextColumn::make('ticketStatus.name')
-                    ->label(__('Status'))
-                    ->sortable()
-                    ->badge()
-                    ->color(function(Ticket $ticket) {
-                        return $ticket->ticketStatus->color ? Color::hex($ticket->ticketStatus->color) : 'gray';
-                    }),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
