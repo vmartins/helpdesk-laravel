@@ -16,6 +16,7 @@ class Ticket extends Model
 
     protected $casts = [
         'status_updated_at' => 'datetime',
+        'internal' => 'boolean',
     ];
 
     protected $fillable = [
@@ -28,6 +29,7 @@ class Ticket extends Model
         'ticket_statuses_id',
         'status_updated_at',
         'responsible_id',
+        'internal',
     ];
 
     /**

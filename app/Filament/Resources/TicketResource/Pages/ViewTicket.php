@@ -31,6 +31,7 @@ class ViewTicket extends ViewRecord
                     $mappedProperties = [
                         'title' => __('Title'),
                         'description' => __('Description'),
+                        'internal' => __('Internal'),
                         'comment' => __('Comment'),
                         'attachments' => __('Attachments'),
                         'priority.name' => __('Priority'),
@@ -46,6 +47,10 @@ class ViewTicket extends ViewRecord
                         'comment',
                     ];
 
+                    $booleanProperties = [
+                        'internal',
+                    ];
+
                     foreach (array_keys($properties) as $type) {
                         foreach ($mappedProperties as $key => $value) {
                             if (array_key_exists($type, $properties)
@@ -53,6 +58,8 @@ class ViewTicket extends ViewRecord
                             ) {
                                 if (array_key_exists($key, array_flip($htmlProperties))) {
                                     $newProperties[$type][$value] = strip_tags($properties[$type][$key]);
+                                } else if (array_key_exists($key, array_flip($booleanProperties))) {
+                                    $newProperties[$type][$value] = $properties[$type][$key] == 1 ? __('Yes') : __('No') ;
                                 } else {
                                     $newProperties[$type][$value] = $properties[$type][$key];
                                 }

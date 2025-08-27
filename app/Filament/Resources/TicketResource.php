@@ -50,7 +50,6 @@ class TicketResource extends Resource
     
     public static function form(Form $form): Form
     {
-        // dd(auth()->user()->units->first()->id);
         return $form
             ->schema([
                 Section::make()->schema([
@@ -155,6 +154,15 @@ class TicketResource extends Resource
                             fn () => !auth()
                                 ->user()
                                 ->hasAnyRole(['Super Admin', 'Admin Unit']),
+                        ),
+
+                    Forms\Components\Toggle::make('internal')
+                        ->translateLabel()
+                        ->required()
+                        ->hidden(
+                            fn () => !auth()
+                                ->user()
+                                ->hasAnyRole(['Super Admin']),
                         ),
 
                     Forms\Components\Placeholder::make('owner_id')
@@ -320,6 +328,10 @@ class TicketResource extends Resource
     {
         return parent::getEloquentQuery()->where(function ($query) {
             $user = auth()->user();
+
+            if (!$user->hasAnyRole(['Super Admin'])) {
+                $query->where('internal', false);
+            }
 
             if ($user->hasAnyRole(['Super Admin', 'Global Viewer'])) {
                 return;
