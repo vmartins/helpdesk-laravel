@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use GeneaLabs\LaravelPivotEvents\Traits\PivotEventTrait;
 
 class Ticket extends Model
 {
     use SoftDeletes;
     use LogsActivity;
+    use PivotEventTrait;
 
     protected $casts = [
         'status_updated_at' => 'datetime',
@@ -21,7 +23,6 @@ class Ticket extends Model
 
     protected $fillable = [
         'priority_id',
-        'unit_id',
         'owner_id',
         'category_id',
         'title',
@@ -37,6 +38,66 @@ class Ticket extends Model
      */
     protected static function booted(): void
     {
+        $relationsAttribute = [
+            'units' => 'name',
+        ];
+
+        $attached = function($model, $relationName, $pivotIds) use ($relationsAttribute) {
+            $oldPivotIds = $model->{$relationName}->pluck('id')->diff($pivotIds)->toArray();
+
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($model)
+                ->event('updated')
+                ->withProperties([
+                    'attributes' => [
+                        $relationName => array_key_exists($relationName, $relationsAttribute)
+                            ? $model->{$relationName}()->get()->pluck($relationsAttribute[$relationName])
+                            : $pivotIds,
+                    ],
+                    'old' => [
+                        $relationName => array_key_exists($relationName, $relationsAttribute)
+                            ? $model->{$relationName}()->newModelInstance()->whereIn('id', $oldPivotIds)->pluck($relationsAttribute[$relationName])
+                            : $oldPivotIds,
+                    ],
+                ])
+                ->log('attached');
+        };
+
+        $detached = function($model, $relationName, $pivotIds) use ($relationsAttribute) {
+            $oldPivotIds = $model->{$relationName}->pluck('id')->concat($pivotIds)->toArray();
+
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($model)
+                ->event('updated')
+                ->withProperties([
+                    'attributes' => [
+                        $relationName => array_key_exists($relationName, $relationsAttribute)
+                            ? $model->{$relationName}->pluck($relationsAttribute[$relationName])
+                            : $pivotIds,
+                    ],
+                    'old' => [
+                        $relationName => array_key_exists($relationName, $relationsAttribute)
+                            ? $model->{$relationName}()->newModelInstance()->whereIn('id', $oldPivotIds)->pluck($relationsAttribute[$relationName])
+                            : $oldPivotIds,
+                    ],
+                ])
+                ->log('detached');
+        };
+        
+        static::pivotAttached($attached);
+        static::pivotDetached($detached);
+        static::pivotSynced(function ($model, $relationName, $changes) use ($attached, $detached) {
+            if (!empty($changes['attached'])) {
+                $attached($model, $relationName, $changes['attached']);
+            }
+            
+            if (!empty($changes['detached'])) {
+                $detached($model, $relationName, $changes['detached']);
+            }
+        });
+
         static::saving(function (Ticket $ticket) {
             if (array_key_exists('ticket_statuses_id', $ticket->getDirty())
                 && (
@@ -58,7 +119,6 @@ class Ticket extends Model
             ->logOnly([
                 '*',
                 'priority.name',
-                'unit.name',
                 'owner.name',
                 'responsible.name',
                 'category.name',

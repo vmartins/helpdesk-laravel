@@ -35,7 +35,7 @@ class ViewTicket extends ViewRecord
                         'comment' => __('Comment'),
                         'attachments' => __('Attachments'),
                         'priority.name' => __('Priority'),
-                        'unit.name' => __('Unit'),
+                        'units' => __('Units'),
                         'owner.name' => __('Owner'),
                         'category.name' => __('Category'),
                         'ticketStatus.name' => __('Status'),
