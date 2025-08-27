@@ -104,13 +104,13 @@ class Ticket extends Model
     }
 
     /**
-     * Get the unit that owns the Ticket.
+     * Get the units that owns the Ticket.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function unit()
+    public function units()
     {
-        return $this->belongsTo(Unit::class);
+        return $this->morphToMany(Unit::class, 'model', 'model_has_units', 'model_id');
     }
 
     /**

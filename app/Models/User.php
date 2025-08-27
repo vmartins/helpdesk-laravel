@@ -37,7 +37,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     ];
 
     protected $fillable = [
-        'unit_id',
         'name',
         'email',
         'email_verified_at',
@@ -71,13 +70,13 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     }
 
     /**
-     * Get the unit that owns the User.
+     * Get the units that owns the User.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function unit()
+    public function units()
     {
-        return $this->belongsTo(Unit::class);
+        return $this->morphToMany(Unit::class, 'model', 'model_has_units', 'model_id');
     }
 
     /**
@@ -128,7 +127,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     public function scopeByRole($query)
     {
         if (auth()->user()->hasRole('Admin Unit')) {
-            return $query->where('users.unit_id', auth()->user()->unit_id);
+            return $query->whereHas('units', function($query) {
+                $query->whereIn('id', auth()->user()->units->pluck('id'));
+            });
         }
     }
 

@@ -103,6 +103,7 @@
     "Token URI": "URI do Token",
     "Unclosed": "Não fechado",
     "Unit": "Unidade",
+    "Units": "Unidades",
     "Updated at": "Atualizado em",
     "User Info URI": "URI de Informações do Usuário",
     "User": "Usuário",
@@ -111,6 +112,5 @@
     "Verify Email Address": "Verificar endereço de e-mail",
     "View": "Visualizar",
     "Website logo image height (e.g. 3rem, 50px, ...)": "Altura da imagem logotipo do site (ex.: 3rem, 50px, ...)",
-    "Why Use Helpdesk?": "Por que usar o Helpdesk?",
-    "Work Unit": "Unidade"
+    "Why Use Helpdesk?": "Por que usar o Helpdesk?"
 }

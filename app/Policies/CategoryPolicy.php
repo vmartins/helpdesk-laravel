@@ -21,7 +21,7 @@ class CategoryPolicy
      */
     public function view(User $user, Category $category): bool
     {
-        return $user->unit_id == $category->unit_id;
+        return $user->units->pluck('id')->intersect($category->units->pluck('id'))->isNotEmpty();
     }
 
     /**

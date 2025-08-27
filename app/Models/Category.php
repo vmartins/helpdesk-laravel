@@ -29,9 +29,9 @@ class Category extends Model
             ->dontSubmitEmptyLogs();
     }
 
-    public function unit()
+    public function units()
     {
-        return $this->belongsTo(Unit::class);
+        return $this->morphToMany(Unit::class, 'model', 'model_has_units', 'model_id');
     }
 
     public function tickets()

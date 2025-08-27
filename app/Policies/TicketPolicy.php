@@ -29,7 +29,7 @@ class TicketPolicy
 
         // The Admin Unit/Unit Viewer can view tickets that are assigned to their specific unit.
         if ($user->hasAnyRole(['Admin Unit', 'Unit Viewer'])) {
-            return $user->id == $ticket->owner_id || $ticket->unit_id == $user->unit_id;
+            return $user->id == $ticket->owner_id || $ticket->units->pluck('id')->intersect($user->units->pluck('id'))->isNotEmpty();
         }
 
         // The staff unit can view tickets that have been assigned to them.
@@ -61,7 +61,7 @@ class TicketPolicy
 
         // The admin unit can update tickets that are assigned to their specific unit.
         if ($user->hasRole('Admin Unit')) {
-            return $user->id == $ticket->owner_id || $ticket->unit_id == $user->unit_id;
+            return $user->id == $ticket->owner_id || $ticket->units->pluck('id')->intersect($user->units->pluck('id'))->isNotEmpty();
         }
 
         // The staff unit can update tickets that have been assigned to them.

@@ -28,7 +28,9 @@ class TicketObserver
             });
 
         $usersQuery->clone()->role('Staff Unit')
-            ->where('unit_id', $ticket->unit_id)
+            ->whereHas('units', function($query) use ($ticket) {
+                $query->whereIn('id', $ticket->units->pluck('id'));
+            })
             ->get()
             ->each(function($user) use (&$staffUsers) {
                 $staffUsers->put($user->id, $user);

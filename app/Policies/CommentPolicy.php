@@ -44,7 +44,7 @@ class CommentPolicy
     {
         // The admin unit can update tickets that are assigned to their specific unit.
         if ($user->hasRole('Admin Unit')) {
-            return $user->id == $comment->user_id || $comment->ticket->unit_id == $user->unit_id;
+            return $user->id == $comment->user_id || $comment->ticket->units->pluck('id')->intersect($user->units->pluck('id'))->isNotEmpty();
         }
 
         // The staff unit can update tickets that have been assigned to them.

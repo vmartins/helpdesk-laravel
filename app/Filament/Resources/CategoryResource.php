@@ -31,9 +31,11 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('unit_id')
-                    ->label(__('Unit'))
-                    ->options(Unit::all()->pluck('name', 'id'))
+                Forms\Components\Select::make('units')
+                    ->label(__('Units'))
+                    ->multiple()
+                    ->relationship(name: 'units', titleAttribute: 'name')
+                    ->preload()
                     ->searchable(),
 
                 Forms\Components\TextInput::make('name')
@@ -50,9 +52,10 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->translateLabel()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('unit.name')
+
+                Tables\Columns\TextColumn::make('units.name')
                     ->searchable()
-                    ->label(__('Unit')),
+                    ->label(__('Units')),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -92,7 +95,9 @@ class CategoryResource extends Resource
                 SoftDeletingScope::class,
             ])->where(function ($query) {
                 if (auth()->user()->hasRole('Admin Unit')) {
-                    $query->where('categories.unit_id', auth()->user()->unit_id);
+                    $query->whereHas('units', function($query) {
+                        $query->whereIn('id', auth()->user()->units->pluck('id'));
+                    });
                 }
             });
     }

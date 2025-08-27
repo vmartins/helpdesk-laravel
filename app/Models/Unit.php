@@ -41,11 +41,11 @@ class Unit extends Model
     /**
      * Get all of the tickets for the Unit
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphedByMany
      */
     public function tickets()
     {
-        return $this->hasMany(Ticket::class);
+        return $this->morphedByMany(Ticket::class, 'model', 'model_has_units');
     }
 
     /**
@@ -55,6 +55,6 @@ class Unit extends Model
      */
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->morphedByMany(User::class, 'model', 'model_has_units');
     }
 }

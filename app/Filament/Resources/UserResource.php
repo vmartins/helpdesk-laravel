@@ -2,17 +2,15 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers\RolesRelationManager;
-use App\Filament\Resources\UserResource\RelationManagers\TicketsRelationManager;
-use App\Models\Unit;
 use App\Models\User;
 use App\Settings\GeneralSettings;
+use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\UserResource\RelationManagers\TicketsRelationManager;
 use Filament\Forms;
+use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -38,23 +36,22 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('unit_id')
-                    ->label(__('Unit'))
-                    ->options(Unit::all()->pluck('name', 'id'))
-                    ->searchable(),
                 Forms\Components\TextInput::make('name')
                     ->translateLabel()
                     ->required()
                     ->maxLength(255),
+
                 Forms\Components\TextInput::make('email')
                     ->translateLabel()
                     ->email()
                     ->required()
                     ->maxLength(255),
+
                 Forms\Components\DateTimePicker::make('email_verified_at')
                     ->translateLabel()
                     ->native(false)
                     ->displayFormat(app(GeneralSettings::class)->datetime_format),
+
                 Forms\Components\TextInput::make('password')
                     ->translateLabel()
                     ->password()
@@ -62,16 +59,36 @@ class UserResource extends Resource
                     ->dehydrated(fn ($state) => filled($state))
                     ->required(fn (string $context): bool => $context === 'create')
                     ->maxLength(255),
+
                 Forms\Components\TextInput::make('identity')
                     ->translateLabel()
                     ->maxLength(255),
+
                 Forms\Components\TextInput::make('phone')
                     ->translateLabel()
                     ->tel()
                     ->maxLength(255),
+
                 Forms\Components\Toggle::make('is_active')
                     ->translateLabel()
                     ->required(),
+
+                Forms\Components\Grid::make()
+                    ->schema([
+                        Forms\Components\Select::make('units')
+                            ->label(__('Units'))
+                            ->multiple()
+                            ->relationship(name: 'units', titleAttribute: 'name')
+                            ->preload()
+                            ->searchable(),
+
+                        Forms\Components\Select::make('roles')
+                            ->label(__('Roles'))
+                            ->multiple()
+                            ->relationship(name: 'roles', titleAttribute: 'name')
+                            ->preload()
+                            ->searchable(),
+                    ]),
             ])
         ;
     }
@@ -110,7 +127,6 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RolesRelationManager::class,
             TicketsRelationManager::class,
         ];
     }

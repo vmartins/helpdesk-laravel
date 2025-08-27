@@ -44,38 +44,41 @@ class TicketResource extends Resource
             return request()->routeIs(static::getRouteBaseName() . '.*')
                 && !collect(request()->query())->dot()->get('tableFilters.only_my_tickets.isActive');
         });
+
         return $navigationsItems;
     }
+    
     public static function form(Form $form): Form
     {
+        // dd(auth()->user()->units->first()->id);
         return $form
             ->schema([
                 Section::make()->schema([
-                    Forms\Components\Select::make('unit_id')
-                        ->label(__('Work Unit'))
-                        ->options(Unit::where(function($query) {
-                            $user = auth()->user();
-
-                            if ($user->hasAnyRole(['Super Admin'])) {
-                                return;
+                    Forms\Components\Select::make('units')
+                        ->label(__('Units'))
+                        ->default(auth()->user()->units->pluck('id')->toArray())
+                        ->multiple()
+                        ->relationship(
+                            name: 'units',
+                            titleAttribute: 'name',
+                            modifyQueryUsing: function(Builder $query) {
+                                $query->whereIn('id', auth()->user()->units->pluck('id'));
                             }
-
-                            if ($user->unit_id) {
-                                $query->whereId($user->unit_id);
-                            }
-                        })->get()->pluck('name', 'id'))
-                        ->default(auth()->user()->unit_id)
+                        )
+                        ->preload()
                         ->searchable()
                         ->required()
                         ->afterStateUpdated(function ($state, callable $get, callable $set) {
-                            $unit = Unit::find($state);
-                            if ($unit) {
+                            $units = Unit::whereIn('id', $state)->get();
+                            if ($units->isNotEmpty()) {
                                 $categoryId = (int) $get('category_id');
                                 if ($categoryId && $category = Category::find($categoryId)) {
-                                    if ($category->unit_id !== $unit->id) {
+                                    if ($category->units->pluck('id')->intersect($units->pluck('id'))->isEmpty()) {
                                         $set('category_id', null);
                                     }
                                 }
+                            } else {
+                                $set('category_id', null);
                             }
                         })
                         ->reactive(),
@@ -83,18 +86,9 @@ class TicketResource extends Resource
                     Forms\Components\Select::make('category_id')
                         ->label(__('Category'))
                         ->options(function (callable $get, callable $set) {
-                            return Category::where(function($query) use ($get) {
-                                $query->whereNull('unit_id');
-                                if ($get('unit_id')) {
-                                    $query->orWhere('unit_id', $get('unit_id'));
-                                }
+                            return Category::whereHas('units', function($query) use ($get) {
+                                $query->whereIn('id', $get('units'));
                             })->get()->pluck('name', 'id');
-                            $unit = Unit::find($get('unit_id'));
-                            if ($unit) {
-                                return $unit->categories->pluck('name', 'id');
-                            }
-
-                            return Category::all()->pluck('name', 'id');
                         })
                         ->searchable()
                         ->required(),
@@ -332,7 +326,9 @@ class TicketResource extends Resource
             }
 
             if ($user->hasAnyRole(['Admin Unit', 'Unit Viewer'])) {
-                $query->where('tickets.unit_id', $user->unit_id)->orWhere('tickets.owner_id', $user->id);
+                $query->whereHas('units', function($query) use ($user) {
+                    $query->whereIn('id', $user->units->pluck('id'));
+                });
             } elseif ($user->hasRole('Staff Unit')) {
                 $query->where('tickets.responsible_id', $user->id)->orWhere('tickets.owner_id', $user->id);
             } else {
