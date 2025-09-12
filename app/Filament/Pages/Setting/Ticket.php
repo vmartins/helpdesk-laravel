@@ -57,6 +57,36 @@ class Ticket extends SettingsPage
                             ->options(TicketStatus::all()->pluck('name', 'id'))
                             ->required(),
                     ]),
+
+                Forms\Components\Section::make(__('Auto Close'))
+                    ->schema([
+                        Forms\Components\Toggle::make('autoclose_enabled')
+                            ->label(__('Enabled'))
+                            ->live()
+                            ->helperText(__('Automatically close tickets without interactions'))
+                            ->required(),
+
+                        Forms\Components\TextInput::make('autoclose_days')
+                            ->label(__('Days'))
+                            ->helperText(__('Number of days without interaction to close the ticket'))
+                            ->visible(fn ($get) => $get('autoclose_enabled'))
+                            ->required(),
+
+                        Forms\Components\Select::make('autoclose_from_status')
+                            ->label(__('From Status'))
+                            ->multiple()
+                            ->options(TicketStatus::all()->pluck('name', 'id'))
+                            ->helperText(__('Origin status of tickets that should be closed'))
+                            ->visible(fn ($get) => $get('autoclose_enabled'))
+                            ->required(),
+
+                        Forms\Components\Select::make('autoclose_to_status')
+                            ->label(__('To Status'))
+                            ->options(TicketStatus::all()->pluck('name', 'id'))
+                            ->helperText(__('Destination status of automatically closed tickets'))
+                            ->visible(fn ($get) => $get('autoclose_enabled'))
+                            ->required(),
+                    ]),
             ]);
     }
 }
