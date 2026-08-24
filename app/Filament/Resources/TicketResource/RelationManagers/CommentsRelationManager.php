@@ -124,9 +124,13 @@ class CommentsRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\Action::make('attachment')
                     ->translateLabel()
-                    ->action(function ($record) {
-                        return response()->download('storage/' . $record->attachments);
-                    })
+                    // ->action(function ($record) {
+                    //     return response()->download('storage/' . $record->attachments);
+                    // })
+                    ->url(
+                        fn ($record) => route('attachments.download', ['id' => $record->id]),
+                        shouldOpenInNewTab: false
+                    )
                     ->hidden(fn ($record) => $record->attachments == ''),
 
                 Tables\Actions\EditAction::make(),
