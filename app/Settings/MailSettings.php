@@ -8,8 +8,8 @@ class MailSettings extends Settings
     public string $smtp_scheme;
     public string $smtp_host;
     public int $smtp_port;
-    public string $smtp_username;
-    public string $smtp_password;
+    public ?string $smtp_username;
+    public ?string $smtp_password;
     public string $smtp_localdomain;
     public string $sendmail_path;
     public string $from_address;
