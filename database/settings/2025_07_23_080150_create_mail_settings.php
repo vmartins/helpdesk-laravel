@@ -7,7 +7,7 @@ return new class extends SettingsMigration
     public function up(): void
     {
         $this->migrator->add('mail.mailer', 'log');
-        $this->migrator->add('mail.smtp_scheme', env('MAIL_SCHEME', "smtp"));
+        $this->migrator->add('mail.smtp_scheme', env('MAIL_SCHEME') ?? 'smtp');
         $this->migrator->add('mail.smtp_host', env('MAIL_HOST', '127.0.0.1'));
         $this->migrator->add('mail.smtp_port', env('MAIL_PORT', 2525));
         $this->migrator->add('mail.smtp_username', env('MAIL_USERNAME'));
