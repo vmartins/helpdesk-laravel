@@ -15,7 +15,6 @@ class Category extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'unit_id',
         'name',
     ];
 

@@ -31,11 +31,11 @@ class Unit extends Model
     /**
      * Get all of the Categories for the Unit
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphedByMany
      */
     public function categories()
     {
-        return $this->hasMany(Category::class);
+        return $this->morphedByMany(Category::class, 'model', 'model_has_units');
     }
 
     /**
