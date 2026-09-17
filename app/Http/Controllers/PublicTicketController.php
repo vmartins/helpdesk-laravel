@@ -16,6 +16,8 @@ class PublicTicketController extends Controller
 {
     public function create(TicketSettings $ticketSettings, GeneralSettings $generalSettings): View
     {
+        app()->setLocale($generalSettings->site_locale);
+
         $categories = Category::with('units')->orderBy('name')->get();
 
         return view('public-ticket.create', [
@@ -30,8 +32,10 @@ class PublicTicketController extends Controller
         ]);
     }
 
-    public function store(Request $request, TicketSettings $ticketSettings): RedirectResponse
+    public function store(Request $request, TicketSettings $ticketSettings, GeneralSettings $generalSettings): RedirectResponse
     {
+        app()->setLocale($generalSettings->site_locale);
+
         abort_unless($ticketSettings->public_ticket_creation_enabled, 404);
 
         $data = $request->validate([
