@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\PublicTicketController;
 use Laravel\Socialite\Facades\Socialite;
 
 /*
@@ -23,6 +24,9 @@ Route::get('/', function () {
 // socialite login
 Route::get('/auth/{provider}', [SocialiteController::class, 'redirectToProvider']);
 Route::get('/auth/{provider}/callback', [SocialiteController::class, 'handleProvideCallback']);
+
+Route::get('/open-ticket', [PublicTicketController::class, 'create'])->name('public-ticket.create');
+Route::post('/open-ticket', [PublicTicketController::class, 'store'])->name('public-ticket.store');
 
 Route::get('/attachments/download/{id}', function (int $id) {
     $record = \App\Models\Comment::findOrFail($id);

@@ -82,7 +82,7 @@ class TicketObserver
     public function deleted(Ticket $ticket): void
     {
         $authUser = auth()->user();
-        if ($authUser && $ticket->owner->id != $authUser->id) {
+        if ($authUser && ! $ticket->owner->is_guest && $ticket->owner->id != $authUser->id) {
             $ticket->owner->notify(new TicketDeleted($ticket));
         }
     }
@@ -93,7 +93,7 @@ class TicketObserver
     public function restored(Ticket $ticket): void
     {
         $authUser = auth()->user();
-        if ($authUser && $ticket->owner->id != $authUser->id) {
+        if ($authUser && ! $ticket->owner->is_guest && $ticket->owner->id != $authUser->id) {
             $ticket->owner->notify(new TicketRestored($ticket));
         }
     }

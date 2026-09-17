@@ -152,7 +152,7 @@ class Ticket extends Model
             });
         }
 
-        return $subscribers;
+        return $subscribers->reject(fn ($subscriber) => $subscriber->is_guest);
     }
     
     /**

@@ -10,6 +10,7 @@ class TicketSettings extends Settings
     public int $autoclose_days = 7;
     public array $autoclose_from_status = [];
     public ?int $autoclose_to_status;
+    public bool $public_ticket_creation_enabled = false;
 
     public static function group(): string
     {

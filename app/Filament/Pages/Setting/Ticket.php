@@ -58,6 +58,13 @@ class Ticket extends SettingsPage
                             ->required(),
                     ]),
 
+                Forms\Components\Section::make(__('Public Ticket Creation'))
+                    ->schema([
+                        Forms\Components\Toggle::make('public_ticket_creation_enabled')
+                            ->label(__('Enabled'))
+                            ->helperText(__('Allow anyone to open a ticket through a public page, without logging in')),
+                    ]),
+
                 Forms\Components\Section::make(__('Auto Close'))
                     ->schema([
                         Forms\Components\Toggle::make('autoclose_enabled')

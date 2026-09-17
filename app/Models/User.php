@@ -28,6 +28,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'email_verified_at' => 'datetime',
         'two_factor_confirmed_at' => 'datetime',
         'is_active' => 'bool',
+        'is_guest' => 'bool',
     ];
 
     protected $hidden = [
@@ -49,6 +50,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'phone',
         'user_level_id',
         'is_active',
+        'is_guest',
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -116,7 +118,37 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
      */
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
-        return auth()->user()->is_active;
+        return auth()->user()->is_active && ! auth()->user()->is_guest;
+    }
+
+    /**
+     * Guests created from the public ticket form must never receive
+     * a working login, regardless of their (unusable, null) password.
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        if ($this->is_guest) {
+            return;
+        }
+
+        parent::sendPasswordResetNotification($token);
+    }
+
+    /**
+     * Get (or create) the single shared user used as the owner of
+     * tickets opened anonymously through the public ticket form.
+     */
+    public static function guest(): self
+    {
+        return static::firstOrCreate(
+            ['is_guest' => true],
+            [
+                'name' => __('Guest'),
+                'email' => 'guest-tickets@' . parse_url(config('app.url'), PHP_URL_HOST),
+                'password' => null,
+                'is_active' => false,
+            ]
+        );
     }
 
     /**
