@@ -60,8 +60,18 @@ class TicketResource extends Resource
                         ->relationship(
                             name: 'units',
                             titleAttribute: 'name',
-                            modifyQueryUsing: function(Builder $query) {
-                                $query->whereIn('id', auth()->user()->units->pluck('id'));
+                            modifyQueryUsing: function(Builder $query, ?Ticket $record) {
+                                if (auth()->user()->hasAnyRole(['Super Admin', 'Global Viewer'])) {
+                                    return;
+                                }
+
+                                $allowedUnitIds = auth()->user()->units->pluck('id');
+
+                                if ($record) {
+                                    $allowedUnitIds = $allowedUnitIds->merge($record->units->pluck('id'));
+                                }
+
+                                $query->whereIn('id', $allowedUnitIds);
                             }
                         )
                         ->preload()
