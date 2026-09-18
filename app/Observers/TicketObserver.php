@@ -36,6 +36,15 @@ class TicketObserver
                 $staffUsers->put($user->id, $user);
             });
 
+        $usersQuery->clone()->role('Admin Unit')
+            ->whereHas('units', function($query) use ($ticket) {
+                $query->whereIn('id', $ticket->units->pluck('id'));
+            })
+            ->get()
+            ->each(function($user) use (&$staffUsers) {
+                $staffUsers->put($user->id, $user);
+            });
+
         $usersQuery->clone()->role('Global Staff')
             ->get()
             ->each(function($user) use (&$staffUsers) {
