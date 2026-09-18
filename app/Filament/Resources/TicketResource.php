@@ -155,8 +155,11 @@ class TicketResource extends Resource
 
                     Forms\Components\Select::make('responsible_id')
                         ->label(__('Responsible'))
-                        ->options(User::ByRole()
-                            ->pluck('name', 'id'))
+                        ->options(function (callable $get) {
+                            return User::whereHas('units', function (Builder $query) use ($get) {
+                                $query->whereIn('id', $get('units') ?? []);
+                            })->pluck('name', 'id');
+                        })
                         ->searchable()
                         ->required()
                         ->hiddenOn('create')
