@@ -21,4 +21,9 @@ class CreateTicket extends CreateRecord
 
         return $data;
     }
+
+    protected function afterCreate(): void
+    {
+        $this->getRecord()->notifyCreated();
+    }
 }

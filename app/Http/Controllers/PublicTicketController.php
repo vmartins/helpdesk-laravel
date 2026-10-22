@@ -71,6 +71,8 @@ class PublicTicketController extends Controller
 
         $ticket->units()->attach([$data['unit_id']]);
 
+        $ticket->notifyCreated();
+
         return redirect()
             ->route('public-ticket.create')
             ->with('success', __('Your ticket has been submitted. Our team will get back to you by email soon.'));

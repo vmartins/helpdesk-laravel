@@ -2,64 +2,13 @@
 
 namespace App\Observers;
 
-use App\Models\User;
 use App\Models\Ticket;
-use App\Notifications\TicketCreated;
 use App\Notifications\TicketDeleted;
 use App\Notifications\TicketRestored;
 use App\Notifications\TicketStatusUpdated;
-use App\Settings\AccountSettings;
-use Illuminate\Support\Collection;
 
 class TicketObserver
 {
-    /**
-     * Handle the Ticket "created" event.
-     */
-    public function created(Ticket $ticket): void
-    {
-        $staffUsers = new Collection([]);
-
-        $accountSettings = app(AccountSettings::class);
-
-        $usersQuery = User::whereNotNull('email')
-            ->when($accountSettings->user_email_verification, function($query) {
-                $query->whereNotNull('email_verified_at');
-            });
-
-        $usersQuery->clone()->role('Staff Unit')
-            ->whereHas('units', function($query) use ($ticket) {
-                $query->whereIn('id', $ticket->units->pluck('id'));
-            })
-            ->get()
-            ->each(function($user) use (&$staffUsers) {
-                $staffUsers->put($user->id, $user);
-            });
-
-        $usersQuery->clone()->role('Admin Unit')
-            ->whereHas('units', function($query) use ($ticket) {
-                $query->whereIn('id', $ticket->units->pluck('id'));
-            })
-            ->get()
-            ->each(function($user) use (&$staffUsers) {
-                $staffUsers->put($user->id, $user);
-            });
-
-        $usersQuery->clone()->role('Global Staff')
-            ->get()
-            ->each(function($user) use (&$staffUsers) {
-                $staffUsers->put($user->id, $user);
-            });
-
-        $authUser = auth()->user();
-
-        if ($authUser && $staffUsers->has($authUser->id)) {
-            $staffUsers->pull($authUser->id);
-        }
-
-        $staffUsers->each(fn ($user) => $user->notify(new TicketCreated($ticket)));
-    }
-
     /**
      * Handle the Ticket "updated" event.
      */

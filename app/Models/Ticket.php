@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\TicketCreated;
 use App\Settings\AccountSettings;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -127,6 +128,38 @@ class Ticket extends Model
             ])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
+    }
+
+    /**
+     * Notify staff that the ticket was created.
+     *
+     * Must be called after the units are attached, since the recipients
+     * depend on them (the "created" model event fires before that).
+     */
+    public function notifyCreated(): void
+    {
+        $unitIds = $this->units()->pluck('units.id');
+
+        $staffUsers = User::whereNotNull('email')
+            ->when(app(AccountSettings::class)->user_email_verification, function($query) {
+                $query->whereNotNull('email_verified_at');
+            })
+            ->where(function($query) use ($unitIds) {
+                $query->role(['Super Admin', 'Global Staff'])
+                    ->orWhere(function($query) use ($unitIds) {
+                        $query->role(['Staff Unit', 'Admin Unit'])
+                            ->whereHas('units', function($query) use ($unitIds) {
+                                $query->whereIn('id', $unitIds);
+                            });
+                    });
+            })
+            ->get();
+
+        $authUser = auth()->user();
+
+        $staffUsers
+            ->reject(fn ($user) => $authUser && $user->id == $authUser->id)
+            ->each(fn ($user) => $user->notify(new TicketCreated($this)));
     }
 
     public function getSubscribers(): Collection
