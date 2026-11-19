@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
@@ -18,6 +19,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasLocalePreference
 {
     use SoftDeletes;
+    use HasApiTokens;
     use HasRoles;
     use HasSuperAdmin;
     use HasFactory;
