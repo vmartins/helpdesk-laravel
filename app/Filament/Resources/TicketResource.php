@@ -155,10 +155,16 @@ class TicketResource extends Resource
 
                     Forms\Components\Select::make('responsible_id')
                         ->label(__('Responsible'))
-                        ->options(function (callable $get) {
+                        ->options(function (callable $get, ?Ticket $record) {
                             return User::whereHas('units', function (Builder $query) use ($get) {
                                 $query->whereIn('id', $get('units') ?? []);
-                            })->pluck('name', 'id');
+                            })
+                            ->where(function (Builder $query) use ($record) {
+                                // keep the current responsible listed even if inactive, so the field still shows it
+                                $query->where('is_active', true)
+                                    ->when($record?->responsible_id, fn (Builder $query, $id) => $query->orWhere('id', $id));
+                            })
+                            ->pluck('name', 'id');
                         })
                         ->searchable()
                         ->required()
