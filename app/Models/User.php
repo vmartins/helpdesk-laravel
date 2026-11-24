@@ -31,6 +31,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'two_factor_confirmed_at' => 'datetime',
         'is_active' => 'bool',
         'is_guest' => 'bool',
+        'notify_ticket_created' => 'bool',
+        'notify_ticket_assigned' => 'bool',
     ];
 
     protected $hidden = [
@@ -53,6 +55,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'user_level_id',
         'is_active',
         'is_guest',
+        'notify_ticket_created',
+        'notify_ticket_assigned',
     ];
 
     public function getActivitylogOptions(): LogOptions

@@ -141,6 +141,7 @@ class Ticket extends Model
         $unitIds = $this->units()->pluck('units.id');
 
         $staffUsers = User::whereNotNull('email')
+            ->where('notify_ticket_created', true)
             ->when(app(AccountSettings::class)->user_email_verification, function($query) {
                 $query->whereNotNull('email_verified_at');
             })

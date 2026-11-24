@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Livewire\NotificationPreferencesForm;
 use App\Models\User;
 use App\Settings\GeneralSettings;
 use App\Filament\Resources\UserResource\Pages;
@@ -89,6 +90,10 @@ class UserResource extends Resource
                             ->preload()
                             ->searchable(),
                     ]),
+
+                Forms\Components\Section::make(__('Email notifications'))
+                    ->schema(NotificationPreferencesForm::getFormSchema())
+                    ->columns(2),
             ])
         ;
     }

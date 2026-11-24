@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\TicketResource;
+use App\Livewire\NotificationPreferencesForm;
 use App\Settings\AccountSettings;
 use App\Settings\GeneralSettings;
 use Filament\Http\Middleware\Authenticate;
@@ -69,7 +70,10 @@ class AdminPanelProvider extends PanelProvider
                     ->shouldRegisterNavigation(false)
                     ->shouldShowEmailForm(false)
                     ->shouldShowDeleteAccountForm(true)
-                    ->shouldShowBrowserSessionsForm(true),
+                    ->shouldShowBrowserSessionsForm(true)
+                    ->customProfileComponents([
+                        NotificationPreferencesForm::class,
+                    ]),
 
                 FilamentApexChartsPlugin::make(),
 

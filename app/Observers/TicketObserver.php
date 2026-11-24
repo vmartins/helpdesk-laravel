@@ -3,9 +3,11 @@
 namespace App\Observers;
 
 use App\Models\Ticket;
+use App\Notifications\TicketAssigned;
 use App\Notifications\TicketDeleted;
 use App\Notifications\TicketRestored;
 use App\Notifications\TicketStatusUpdated;
+use App\Settings\AccountSettings;
 
 class TicketObserver
 {
@@ -30,7 +32,25 @@ class TicketObserver
                 $subscribers->pull($authUser->id);
             }
 
+            // a newly assigned responsible already gets TicketAssigned below
+            if ($ticket->wasChanged('responsible_id')) {
+                $subscribers->pull($ticket->responsible_id);
+            }
+
             $subscribers->each(fn ($subscriber) => $subscriber->notify(new TicketStatusUpdated($ticket)));
+        }
+
+        // query the relation instead of using $ticket->responsible, which may still hold the previous responsible
+        $responsible = $ticket->wasChanged('responsible_id') ? $ticket->responsible()->first() : null;
+
+        if ($responsible) {
+            $authUser = auth()->user();
+
+            $verified = ! app(AccountSettings::class)->user_email_verification || $responsible->email_verified_at;
+
+            if ($verified && $responsible->notify_ticket_assigned && $responsible->email && (! $authUser || $authUser->id != $responsible->id)) {
+                $responsible->notify(new TicketAssigned($ticket));
+            }
         }
     }
 

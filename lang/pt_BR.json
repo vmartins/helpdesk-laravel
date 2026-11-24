@@ -1,4 +1,9 @@
 {
+    "Email notifications": "Notificações por email",
+    "Choose which ticket emails you want to receive.": "Escolha quais emails de chamados você deseja receber.",
+    "Tickets created that I can view": "Chamados criados que posso visualizar",
+    "Unit roles receive tickets of their units; Super Admin and Global Staff receive tickets of all units.": "Papéis de unidade recebem os chamados das suas unidades; Super Admin e Global Staff recebem os chamados de todas as unidades.",
+    "Tickets assigned to me as responsible": "Chamados atribuídos a mim como responsável",
     "Account": "Conta",
     "Add Comment": "Adicionar Comentário",
     "Administration": "Administração",
@@ -105,6 +110,7 @@
     "Statuses indicating that the ticket is closed and can no longer be edited": "Status que indicam que o chamado está fechado e não pode mais ser editado",
     "Subject": "Assunto",
     "Submit": "Enviar",
+    "Ticket #:ticket assigned to you": "Chamado #:ticket atribuído a você",
     "Ticket #:ticket changed to :status": "Chamado #:ticket alterado para :status",
     "Ticket #:ticket created": "Chamado #:ticket criado",
     "Ticket #:ticket deleted": "Chamado #:ticket removido",
