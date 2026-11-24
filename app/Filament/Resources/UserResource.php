@@ -92,7 +92,7 @@ class UserResource extends Resource
                     ]),
 
                 Forms\Components\Section::make(__('Email notifications'))
-                    ->schema(NotificationPreferencesForm::getFormSchema())
+                    ->schema(NotificationPreferencesForm::getPreferencesSchema())
                     ->columns(2),
             ])
         ;

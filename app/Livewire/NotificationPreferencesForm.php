@@ -33,7 +33,7 @@ class NotificationPreferencesForm extends BaseProfileForm
                 Section::make(__('Email notifications'))
                     ->aside()
                     ->description(__('Choose which ticket emails you want to receive.'))
-                    ->schema(static::getFormSchema()),
+                    ->schema(static::getPreferencesSchema()),
             ])
             ->statePath('data');
     }
@@ -41,7 +41,7 @@ class NotificationPreferencesForm extends BaseProfileForm
     /**
      * Shared with UserResource, so admins can change other users' preferences.
      */
-    public static function getFormSchema(): array
+    public static function getPreferencesSchema(): array
     {
         return [
             Toggle::make('notify_ticket_created')
